@@ -1,0 +1,98 @@
+{
+	"root": true,
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noUnusedVariables": "warn",
+				"useExhaustiveDependencies": "off"
+			},
+			"suspicious": {
+				"noExplicitAny": "off",
+				"noShadowRestrictedNames": "off",
+				"noArrayIndexKey": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "warn"
+			},
+			"complexity": {
+				"noExcessiveCognitiveComplexity": "off"
+			},
+			"performance": {
+				"noDelete": "warn"
+			},
+			"a11y": {
+				"useSemanticElements": "off",
+				"noSvgWithoutTitle": "off",
+				"noLabelWithoutControl": "off",
+				"useAriaPropsForRole": "off",
+				"useFocusableInteractive": "off",
+				"useKeyWithClickEvents": "off",
+				"noInteractiveElementToNoninteractiveRole": "off",
+				"useButtonType": "off",
+				"noRedundantRoles": "off"
+			},
+			"nursery": {
+				"useSortedClasses": {
+					"level": "warn",
+					"fix": "safe",
+					"options": {
+						"attributes": [
+							"classList"
+						],
+						"functions": [
+							"clsx",
+							"cva",
+							"cn"
+						]
+					}
+				}
+			}
+		},
+		"domains": {
+			"project": "recommended"
+		}
+	},
+	"json": {
+		"formatter": {
+			"enabled": true
+		}
+	},
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": {
+					"level": "on",
+					"options": {
+						"groups": [
+							[
+								"next",
+								"next/**",
+								"react",
+								"react-dom",
+								"@tabler/icons-react"
+							],
+							":BLANK_LINE:",
+							[
+								"@/components",
+								"@/components/**"
+							],
+							":BLANK_LINE:",
+							[
+								"@/lib",
+								"@/lib/**"
+							],
+							":BLANK_LINE:",
+							[
+								"@/hooks",
+								"@/hooks/**"
+							]
+						]
+					}
+				}
+			}
+		}
+	}
+}
