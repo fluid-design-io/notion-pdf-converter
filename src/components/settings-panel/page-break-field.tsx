@@ -1,56 +1,79 @@
-import { Checkbox } from "@/components/ui/checkbox";
+import {
+	Combobox,
+	ComboboxChip,
+	ComboboxChips,
+	ComboboxChipsInput,
+	ComboboxContent,
+	ComboboxEmpty,
+	ComboboxItem,
+	ComboboxList,
+	ComboboxValue,
+} from "@/components/ui/combobox";
 import { Field, FieldLabel } from "@/components/ui/field";
 
 import { useSettingsPanelContext } from "./context";
 
+const PAGE_BREAK_OPTIONS = ["H1", "H2", "H3", "Divider"] as const;
+
+function settingsToValue(settings: {
+	splitByH1: boolean;
+	splitByH2: boolean;
+	splitByH3: boolean;
+	splitByDivider: boolean;
+}): string[] {
+	const value: string[] = [];
+	if (settings.splitByH1) value.push("H1");
+	if (settings.splitByH2) value.push("H2");
+	if (settings.splitByH3) value.push("H3");
+	if (settings.splitByDivider) value.push("Divider");
+	return value;
+}
+
+function valueToSettings(value: string[]) {
+	return {
+		splitByH1: value.includes("H1"),
+		splitByH2: value.includes("H2"),
+		splitByH3: value.includes("H3"),
+		splitByDivider: value.includes("Divider"),
+	};
+}
+
 export const SettingsPanelPageBreakField = () => {
 	const { settings, setSettings } = useSettingsPanelContext();
+	const value = settingsToValue(settings);
+
+	const handleValueChange = (newValue: string[]) => {
+		setSettings(valueToSettings(newValue));
+	};
 
 	return (
 		<Field>
 			<FieldLabel>Page Break</FieldLabel>
-			<div className="flex flex-col gap-2 text-xs">
-				<label className="flex items-center gap-2" htmlFor="split-h1">
-					<Checkbox
-						id="split-h1"
-						checked={settings.splitByH1}
-						onCheckedChange={(checked) =>
-							setSettings({ splitByH1: checked === true })
-						}
-					/>
-					Split pages by H1
-				</label>
-				<label className="flex items-center gap-2" htmlFor="split-h2">
-					<Checkbox
-						id="split-h2"
-						checked={settings.splitByH2}
-						onCheckedChange={(checked) =>
-							setSettings({ splitByH2: checked === true })
-						}
-					/>
-					Split pages by H2
-				</label>
-				<label className="flex items-center gap-2" htmlFor="split-h3">
-					<Checkbox
-						id="split-h3"
-						checked={settings.splitByH3}
-						onCheckedChange={(checked) =>
-							setSettings({ splitByH3: checked === true })
-						}
-					/>
-					Split pages by H3
-				</label>
-				<label className="flex items-center gap-2" htmlFor="split-divider">
-					<Checkbox
-						id="split-divider"
-						checked={settings.splitByDivider}
-						onCheckedChange={(checked) =>
-							setSettings({ splitByDivider: checked === true })
-						}
-					/>
-					Split pages by Divider
-				</label>
-			</div>
+			<Combobox
+				items={[...PAGE_BREAK_OPTIONS]}
+				multiple
+				value={value}
+				onValueChange={handleValueChange}
+			>
+				<ComboboxChips>
+					<ComboboxValue>
+						{value.map((item) => (
+							<ComboboxChip key={item}>{item}</ComboboxChip>
+						))}
+					</ComboboxValue>
+					<ComboboxChipsInput placeholder="Add page break element" />
+				</ComboboxChips>
+				<ComboboxContent className="md:w-72">
+					<ComboboxEmpty>No items found.</ComboboxEmpty>
+					<ComboboxList>
+						{(item) => (
+							<ComboboxItem key={item} value={item}>
+								{item}
+							</ComboboxItem>
+						)}
+					</ComboboxList>
+				</ComboboxContent>
+			</Combobox>
 		</Field>
 	);
 };
