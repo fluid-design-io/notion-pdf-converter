@@ -11,6 +11,10 @@ import { SettingsPanelFontField } from "./font-field";
 import { SettingsPanelFontSizeField } from "./font-size-field";
 import { SettingsPanelFooter } from "./footer";
 import { SettingsPanelHeader } from "./header";
+import {
+	SettingsPanelFooterField,
+	SettingsPanelHeaderField,
+} from "./header-footer-field";
 import { SettingsPanelHeadingScaleField } from "./heading-scale-field";
 import { SettingsPanelLineHeightField } from "./line-height-field";
 import { SettingsPanelMarginsField } from "./margins-field";
@@ -36,6 +40,10 @@ const SettingsPanelProvider = ({
 	// Use useTransition to prevent heavy rendering delays when updating settings
 	const [settings, setSettings] = useQueryStates(pdfSettingsParsers, {
 		shallow: true,
+		limitUrlUpdates: {
+			method: "debounce",
+			timeMs: 650,
+		},
 	});
 	const { presets, addPreset, removePreset } = usePresetsStore();
 	const [presetName, setPresetName] = React.useState("");
@@ -124,6 +132,8 @@ export const SettingsPanel = Object.assign(SettingsPanelRoot, {
 	LineHeightField: SettingsPanelLineHeightField,
 	HeadingScaleField: SettingsPanelHeadingScaleField,
 	MarginsField: SettingsPanelMarginsField,
+	HeaderField: SettingsPanelHeaderField,
+	FooterField: SettingsPanelFooterField,
 	PageSizeField: SettingsPanelPageSizeField,
 	OrientationField: SettingsPanelOrientationField,
 	PageBreakField: SettingsPanelPageBreakField,

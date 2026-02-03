@@ -8,6 +8,7 @@ export const COLORS = {
 		pageBackground: "#ffffff",
 		text: TW_COLORS.neutral[950],
 		muted: TW_COLORS.neutral[200],
+		mutedForeground: TW_COLORS.neutral[400],
 		divider: TW_COLORS.neutral[200],
 		link: TW_COLORS.blue[500],
 		codeForeground: TW_COLORS.red[600],
@@ -18,6 +19,7 @@ export const COLORS = {
 		pageBackground: TW_COLORS.neutral[900],
 		text: TW_COLORS.neutral[50],
 		muted: TW_COLORS.neutral[800],
+		mutedForeground: TW_COLORS.neutral[600],
 		divider: TW_COLORS.neutral[800],
 		link: "#38bdf8",
 		codeForeground: "#EB5758",
@@ -62,8 +64,6 @@ export const createBlockStyles = (settings: PdfSettings) => {
 			fontFamily: settings.font,
 		},
 		listItem: {
-			flexDirection: "row",
-			flexWrap: "wrap",
 			marginBottom: spacing * 0.6,
 			fontFamily: settings.font,
 			paddingLeft: baseSize * 1.6,
@@ -80,11 +80,7 @@ export const createBlockStyles = (settings: PdfSettings) => {
 			color: colors.text,
 			fontFamily: settings.font,
 		},
-		listContent: {
-			flex: 1,
-			color: colors.text,
-			fontFamily: settings.font,
-		},
+		listContent: {},
 		listNested: {
 			marginLeft: baseSize * 1.2,
 			marginTop: spacing * 0.4,

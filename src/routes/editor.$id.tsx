@@ -15,7 +15,8 @@ export const Route = createFileRoute("/editor/$id")({
 		const blocks = await fetchNotionBlocks({ data: { id: params.id } });
 		let pageTitle = "";
 		if (page.object === "page" && "properties" in page) {
-			const titleProperty = page.properties?.title;
+			console.log("Page properties", page.properties);
+			const titleProperty = page.properties?.Name;
 			if (titleProperty && "title" in titleProperty) {
 				pageTitle = titleProperty.title[0]?.plain_text || "Notion Page";
 			}
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/editor/$id")({
 
 function EditorPage() {
 	const { pageTitle, blocks } = Route.useLoaderData();
+	console.log("PageTitle", pageTitle);
 
 	const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
@@ -66,6 +68,8 @@ function EditorPage() {
 							<SettingsPanel.LineHeightField />
 							<SettingsPanel.HeadingScaleField />
 							<SettingsPanel.MarginsField />
+							<SettingsPanel.HeaderField />
+							<SettingsPanel.FooterField />
 							<SettingsPanel.PageSizeField />
 							<SettingsPanel.OrientationField />
 							<SettingsPanel.PageBreakField />

@@ -66,11 +66,12 @@ export function PdfPreview({
 		}
 
 		let cancelled = false;
+		let loadingTask: ReturnType<typeof getDocument> | null = null;
 		setIsParsing(true);
 
 		const loadPdf = async () => {
 			try {
-				const loadingTask = getDocument(blobUrl);
+				loadingTask = getDocument(blobUrl);
 				const loadedDoc = await loadingTask.promise;
 				if (!cancelled) {
 					setPdfDoc(loadedDoc);
@@ -84,6 +85,7 @@ export function PdfPreview({
 		void loadPdf();
 		return () => {
 			cancelled = true;
+			loadingTask?.destroy();
 		};
 	}, [blobUrl]);
 

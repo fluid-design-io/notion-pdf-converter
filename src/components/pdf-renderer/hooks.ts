@@ -1,5 +1,6 @@
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
-import { DocumentProps, pdf } from "@react-pdf/renderer";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+
+import { type DocumentProps, usePDF } from "@react-pdf/renderer";
 
 // Hook for measuring element size
 export function useElementWidth<T extends HTMLElement>() {
@@ -26,49 +27,25 @@ export function useElementWidth<T extends HTMLElement>() {
 
 // Hook for generating the Blob URL
 export function usePdfBlob(
-	documentCallback: () => React.ReactElement,
+	documentCallback: () => React.ReactElement<DocumentProps>,
 	deps: any[],
 ) {
-	const [url, setUrl] = useState<string | null>(null);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<Error | null>(null);
+	const document = useMemo(() => documentCallback(), deps);
+	const [instance, updateInstance] = usePDF({ document });
+	const hasMounted = useRef(false);
 
 	useEffect(() => {
-		let cancelled = false;
-		setLoading(true);
+		if (!hasMounted.current) {
+			hasMounted.current = true;
+			return;
+		}
 
-		const generate = async () => {
-			try {
-				const doc = documentCallback() as React.ReactElement<DocumentProps>;
-				const blob = await pdf(doc).toBlob();
+		updateInstance(document);
+	}, [document, updateInstance]);
 
-				if (cancelled) return;
-
-				const newUrl = URL.createObjectURL(blob);
-				setUrl(newUrl);
-				setError(null);
-			} catch (err) {
-				if (!cancelled)
-					setError(
-						err instanceof Error ? err : new Error("Failed to generate PDF"),
-					);
-			} finally {
-				if (!cancelled) setLoading(false);
-			}
-		};
-
-		void generate();
-
-		return () => {
-			cancelled = true;
-			// Revoke old URL to prevent memory leaks
-			setUrl((prev) => {
-				if (prev) URL.revokeObjectURL(prev);
-				return null;
-			});
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, deps);
-
-	return { url, loading, error };
+	return {
+		url: instance.url ?? null,
+		loading: instance.loading,
+		error: instance.error ?? null,
+	};
 }

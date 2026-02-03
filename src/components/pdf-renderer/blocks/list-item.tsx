@@ -20,7 +20,7 @@ export function ListItemBlock({ block, styles, index }: ListItemBlockProps) {
 
 	return (
 		<View style={styles.listItem} wrap>
-			<Text style={styles.listContent}>
+			<Text style={styles.listContent} wrap={false}>
 				<Text style={styles.listBulletInline}>{bullet} </Text>
 				<RichText
 					richText={richText}
