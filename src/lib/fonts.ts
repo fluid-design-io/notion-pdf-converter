@@ -1,6 +1,10 @@
 import "@fontsource/roboto/400";
-import "@fontsource/monaspace-neon/400";
+import "@fontsource/roboto/700";
 
+import "@fontsource/monaspace-neon/400";
+import "@fontsource/monaspace-neon/700";
+
+/** Supported fonts to render in the PDF, we're using weights 400, 600 and 700 for all the fonts. */
 export const FONTS = [
 	{
 		family: "Roboto",
@@ -50,15 +54,15 @@ export const FONTS = [
 			// 	fontWeight: 500,
 			// 	fontStyle: "italic",
 			// },
-			// {
-			// 	src: "https://cdn.jsdelivr.net/fontsource/fonts/roboto@latest/latin-600-normal.woff",
-			// 	fontWeight: 600,
-			// },
-			// {
-			// 	src: "https://cdn.jsdelivr.net/fontsource/fonts/roboto@latest/latin-600-italic.woff",
-			// 	fontWeight: 600,
-			// 	fontStyle: "italic",
-			// },
+			{
+				src: "https://cdn.jsdelivr.net/fontsource/fonts/roboto@latest/latin-600-normal.woff",
+				fontWeight: 600,
+			},
+			{
+				src: "https://cdn.jsdelivr.net/fontsource/fonts/roboto@latest/latin-600-italic.woff",
+				fontWeight: 600,
+				fontStyle: "italic",
+			},
 			{
 				src: "https://cdn.jsdelivr.net/fontsource/fonts/roboto@latest/latin-700-normal.woff",
 				fontWeight: 700,
@@ -127,15 +131,15 @@ export const FONTS = [
 			// 	fontWeight: 500,
 			// 	fontStyle: "italic",
 			// },
-			// {
-			// 	src: "https://cdn.jsdelivr.net/fontsource/fonts/monaspace-neon@latest/latin-600-normal.woff",
-			// 	fontWeight: 600,
-			// },
-			// {
-			// 	src: "https://cdn.jsdelivr.net/fontsource/fonts/monaspace-neon@latest/latin-600-italic.woff",
-			// 	fontWeight: 600,
-			// 	fontStyle: "italic",
-			// },
+			{
+				src: "https://cdn.jsdelivr.net/fontsource/fonts/monaspace-neon@latest/latin-600-normal.woff",
+				fontWeight: 600,
+			},
+			{
+				src: "https://cdn.jsdelivr.net/fontsource/fonts/monaspace-neon@latest/latin-600-italic.woff",
+				fontWeight: 600,
+				fontStyle: "italic",
+			},
 			{
 				src: "https://cdn.jsdelivr.net/fontsource/fonts/monaspace-neon@latest/latin-700-normal.woff",
 				fontWeight: 700,

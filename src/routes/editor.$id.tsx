@@ -10,7 +10,7 @@ import { fetchNotionBlocks, fetchNotionPage } from "@/server/notion";
 
 export const Route = createFileRoute("/editor/$id")({
 	component: EditorPage,
-	beforeLoad: async ({ params }) => {
+	loader: async ({ params }) => {
 		const page = await fetchNotionPage({ data: { id: params.id } });
 		const blocks = await fetchNotionBlocks({ data: { id: params.id } });
 		let pageTitle = "";
@@ -22,10 +22,12 @@ export const Route = createFileRoute("/editor/$id")({
 		}
 		return { pageTitle, blocks };
 	},
+	staleTime: 1000 * 60 * 10, // 10 minutes
+	gcTime: 1000 * 60 * 60 * 24, // 24 hours
 });
 
 function EditorPage() {
-	const { pageTitle, blocks } = Route.useRouteContext();
+	const { pageTitle, blocks } = Route.useLoaderData();
 
 	const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 

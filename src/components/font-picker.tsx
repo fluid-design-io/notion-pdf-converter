@@ -37,8 +37,10 @@ export function FontPicker({
 				<PickerTrigger className="rounded-none md:rounded-none md:border-border">
 					<div className="flex flex-col justify-start text-left">
 						<div className="text-muted-foreground text-xs">Font</div>
-						<div className="font-medium text-foreground text-sm">
-							{currentFont?.family}
+						<div className="font-bold text-foreground text-sm">
+							<span style={{ fontFamily: currentFont?.family }}>
+								{currentFont?.family}
+							</span>
 						</div>
 					</div>
 					<div
@@ -66,7 +68,10 @@ export function FontPicker({
 									<PickerRadioItem value={font.family} className="rounded-none">
 										<Item size="xs">
 											<ItemContent className="gap-1">
-												<ItemTitle className="font-medium text-muted-foreground text-xs">
+												<ItemTitle
+													className="font-bold text-xs"
+													style={{ fontFamily: font.family }}
+												>
 													{font.family}
 												</ItemTitle>
 												<ItemDescription style={{ fontFamily: font.family }}>

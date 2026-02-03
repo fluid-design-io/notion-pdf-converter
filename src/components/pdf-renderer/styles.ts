@@ -49,7 +49,7 @@ export const createBlockStyles = (settings: PdfSettings) => {
 			color: colors.text,
 			fontSize: baseSize * settings.headingScale * 0.85,
 			fontWeight: 700,
-			marginBottom: spacing * 0.9,
+			marginBottom: spacing,
 			marginTop: spacing,
 			fontFamily: settings.font,
 		},
@@ -57,7 +57,7 @@ export const createBlockStyles = (settings: PdfSettings) => {
 			color: colors.text,
 			fontSize: baseSize * settings.headingScale * 0.75,
 			fontWeight: 600,
-			marginBottom: spacing * 0.8,
+			marginBottom: spacing * 0.9,
 			marginTop: spacing * 0.9,
 			fontFamily: settings.font,
 		},
@@ -207,6 +207,7 @@ export const createBlockStyles = (settings: PdfSettings) => {
 		},
 		tableHeaderText: {
 			fontWeight: 600,
+			fontFamily: settings.font,
 		},
 		toggleLabel: {
 			color: colors.text,
