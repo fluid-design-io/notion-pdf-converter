@@ -1,17 +1,18 @@
+import "../client-polyfills";
+
+import { ThemeProvider } from "@/lib/theme-provider";
+
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import type { QueryClient } from "@tanstack/react-query";
 import {
+	createRootRouteWithContext,
 	DefaultGlobalNotFound,
 	HeadContent,
 	Outlet,
 	Scripts,
-	createRootRoute,
-	createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import { NuqsAdapter } from "nuqs/adapters/tanstack-router";
-
-import type { QueryClient } from "@tanstack/react-query";
-
 import appCss from "../styles.css?url";
 
 export const Route = createRootRouteWithContext<{
@@ -52,12 +53,14 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<head>
 				<HeadContent />
 			</head>
 			<body>
-				<NuqsAdapter>{children}</NuqsAdapter>
+				<ThemeProvider attribute={["data-theme", "class"]}>
+					<NuqsAdapter>{children}</NuqsAdapter>
+				</ThemeProvider>
 				<TanStackDevtools
 					config={{
 						position: "bottom-right",

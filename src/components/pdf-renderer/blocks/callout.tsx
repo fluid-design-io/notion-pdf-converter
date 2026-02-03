@@ -1,6 +1,6 @@
 import type { PdfSettings } from "@/lib/pdf-settings";
 
-import { Text, View } from "@react-pdf/renderer";
+import { Image, Text, View } from "@react-pdf/renderer";
 import { RichText } from "../rich-text";
 import type { BlockStyles } from "../styles";
 import type { BlockByType } from "../types";
@@ -100,6 +100,15 @@ export function CalloutBlock({ block, styles, settings }: CalloutBlockProps) {
 	const color = callout.color || "default";
 	const isDark = settings.theme === "dark";
 	const colors = getCalloutColor(color, isDark);
+	const emoji = icon?.type === "emoji" ? icon.emoji : null;
+	const iconUrl =
+		icon?.type === "external"
+			? icon.external?.url
+			: icon?.type === "file"
+				? icon.file?.url
+				: icon?.type === "custom_emoji"
+					? icon.custom_emoji?.url
+					: null;
 
 	return (
 		<View
@@ -113,9 +122,10 @@ export function CalloutBlock({ block, styles, settings }: CalloutBlockProps) {
 			wrap
 		>
 			<View style={{ flexDirection: "row" }}>
-				{icon && icon.type === "emoji" && (
-					<Text style={styles.calloutIcon}>{icon.emoji}</Text>
-				)}
+				{emoji ? <Text style={styles.calloutIcon}>{emoji}</Text> : null}
+				{iconUrl ? (
+					<Image src={iconUrl} style={styles.calloutIconImage} />
+				) : null}
 				<View style={{ flex: 1 }}>
 					<RichText
 						richText={callout.rich_text}

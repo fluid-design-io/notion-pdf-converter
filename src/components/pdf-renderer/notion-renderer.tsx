@@ -1,18 +1,22 @@
 import type { PdfSettings } from "@/lib/pdf-settings";
 
-import { View } from "@react-pdf/renderer";
+import { Text, View } from "@react-pdf/renderer";
 import {
+	BookmarkBlock,
 	CalloutBlock,
 	DividerBlock,
 	HeadingBlock,
 	ImageBlock,
+	LinkPreviewBlock,
 	ListItemBlock,
 	ParagraphBlock,
 	QuoteBlock,
+	TableBlock,
 	TodoBlock,
+	ToggleBlock,
 } from "./blocks";
 import { createBlockStyles } from "./styles";
-import type { NotionBlock } from "./types";
+import type { BlockByType, NotionBlock } from "./types";
 
 type NotionRendererProps = {
 	blocks: NotionBlock[];
@@ -36,6 +40,16 @@ export function NotionRenderer({ blocks, settings }: NotionRendererProps) {
 	const styles = createBlockStyles(settings);
 	let listKind: "bulleted" | "numbered" | null = null;
 	let listIndex = 1;
+	const isDev = import.meta.env.DEV;
+
+	const renderUnsupported = (blockType: string) =>
+		isDev ? (
+			<View style={styles.unsupportedBanner}>
+				<Text style={styles.unsupportedBannerText}>
+					Unsupported block type {blockType}
+				</Text>
+			</View>
+		) : null;
 
 	return (
 		<View>
@@ -69,9 +83,18 @@ export function NotionRenderer({ blocks, settings }: NotionRendererProps) {
 							listKind = "bulleted";
 							listIndex = 1;
 						}
+						const bulletedChildren = block.children ?? [];
 						return (
 							<View key={block.id} break={breakBefore}>
 								<ListItemBlock block={block} styles={styles} />
+								{bulletedChildren.length > 0 ? (
+									<View style={styles.listNested}>
+										<NotionRenderer
+											blocks={bulletedChildren}
+											settings={settings}
+										/>
+									</View>
+								) : null}
 							</View>
 						);
 					}
@@ -82,6 +105,7 @@ export function NotionRenderer({ blocks, settings }: NotionRendererProps) {
 						}
 						const itemIndex = listIndex;
 						listIndex += 1;
+						const numberedChildren = block.children ?? [];
 						return (
 							<View key={block.id} break={breakBefore}>
 								<ListItemBlock
@@ -89,6 +113,14 @@ export function NotionRenderer({ blocks, settings }: NotionRendererProps) {
 									styles={styles}
 									index={itemIndex}
 								/>
+								{numberedChildren.length > 0 ? (
+									<View style={styles.listNested}>
+										<NotionRenderer
+											blocks={numberedChildren}
+											settings={settings}
+										/>
+									</View>
+								) : null}
 							</View>
 						);
 					}
@@ -120,6 +152,45 @@ export function NotionRenderer({ blocks, settings }: NotionRendererProps) {
 								/>
 							</View>
 						);
+					case "bookmark":
+						return (
+							<View key={block.id} break={breakBefore}>
+								<BookmarkBlock block={block} styles={styles} />
+							</View>
+						);
+					case "link_preview":
+						return (
+							<View key={block.id} break={breakBefore}>
+								<LinkPreviewBlock block={block} styles={styles} />
+							</View>
+						);
+					case "table": {
+						const rowBlocks = (block.children ?? []).filter(
+							(child): child is BlockByType<"table_row"> =>
+								child.type === "table_row",
+						);
+						return (
+							<View key={block.id} break={breakBefore}>
+								<TableBlock block={block} rows={rowBlocks} styles={styles} />
+							</View>
+						);
+					}
+					case "toggle": {
+						const toggleChildren = block.children ?? [];
+						return (
+							<View key={block.id} break={breakBefore}>
+								<ToggleBlock block={block} styles={styles} />
+								{toggleChildren.length > 0 ? (
+									<View style={styles.toggleChildren}>
+										<NotionRenderer
+											blocks={toggleChildren}
+											settings={settings}
+										/>
+									</View>
+								) : null}
+							</View>
+						);
+					}
 					case "to_do":
 						return (
 							<View key={block.id} break={breakBefore}>
@@ -127,7 +198,14 @@ export function NotionRenderer({ blocks, settings }: NotionRendererProps) {
 							</View>
 						);
 					default:
-						return null;
+						return (() => {
+							const unsupported = renderUnsupported(block.type);
+							return unsupported ? (
+								<View key={block.id} break={breakBefore}>
+									{unsupported}
+								</View>
+							) : null;
+						})();
 				}
 			})}
 		</View>

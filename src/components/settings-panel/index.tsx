@@ -31,17 +31,11 @@ const SettingsPanelProvider = ({
 	onDownload = () => {},
 	children,
 }: React.PropsWithChildren<SettingsPanelProps>) => {
-	const [_isPending, startTransition] = React.useTransition();
 	const router = useRouter();
 
 	// Use useTransition to prevent heavy rendering delays when updating settings
 	const [settings, setSettings] = useQueryStates(pdfSettingsParsers, {
-		startTransition,
-		shallow: false,
-		limitUrlUpdates: {
-			method: "debounce",
-			timeMs: 1000,
-		},
+		shallow: true,
 	});
 	const { presets, addPreset, removePreset } = usePresetsStore();
 	const [presetName, setPresetName] = React.useState("");

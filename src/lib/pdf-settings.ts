@@ -12,7 +12,7 @@ export const pageSizeOptions = ["letter", "a4", "legal"] as const;
 export const orientationOptions = ["portrait", "landscape"] as const;
 
 export const pdfSettingsParsers = {
-	font: parseAsString.withDefault(""),
+	font: parseAsString.withDefault("Roboto"),
 	theme: parseAsStringLiteral(themeOptions).withDefault("light"),
 	fontSize: parseAsInteger.withDefault(12),
 	lineHeight: parseAsFloat.withDefault(1.5),

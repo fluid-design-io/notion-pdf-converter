@@ -22,7 +22,7 @@ export const SettingsPanelOrientationField = () => {
 			>
 				{orientationOptions.map((option) => (
 					<ToggleGroupItem
-						key={option}
+						key={`orientation-${option}`}
 						value={option}
 						className="hover:bg-background data-pressed:bg-background"
 					>

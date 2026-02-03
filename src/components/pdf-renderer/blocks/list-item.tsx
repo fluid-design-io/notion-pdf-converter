@@ -10,21 +10,25 @@ type ListItemBlockProps = {
 };
 
 export function ListItemBlock({ block, styles, index }: ListItemBlockProps) {
-	const richText = block[block.type].rich_text;
+	const blockType = block.type;
+	const richText =
+		blockType === "numbered_list_item"
+			? block.numbered_list_item.rich_text
+			: block.bulleted_list_item.rich_text;
 	const bullet =
-		block.type === "numbered_list_item" ? `${index ?? 1}.` : "\u2022";
+		blockType === "numbered_list_item" ? `${index ?? 1}.` : "\u2022";
 
 	return (
 		<View style={styles.listItem} wrap>
-			<Text style={styles.listBullet}>{bullet}</Text>
-			<View style={styles.listContent}>
+			<Text style={styles.listContent}>
+				<Text style={styles.listBulletInline}>{bullet} </Text>
 				<RichText
 					richText={richText}
 					style={styles.listContent}
 					linkStyle={styles.link}
 					codeStyle={styles.code}
 				/>
-			</View>
+			</Text>
 		</View>
 	);
 }

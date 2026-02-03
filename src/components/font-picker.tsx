@@ -29,10 +29,7 @@ export function FontPicker({
 	value: string;
 	onChange: (value: string) => void;
 }) {
-	const currentFont = React.useMemo(
-		() => fonts.find((font) => font.family === value),
-		[fonts, value],
-	);
+	const currentFont = fonts.find((font) => font.family === value);
 
 	return (
 		<div className="group/picker relative">

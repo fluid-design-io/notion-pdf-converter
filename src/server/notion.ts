@@ -85,5 +85,44 @@ export const fetchNotionBlocks = createServerFn({ method: "POST" })
 			throw error;
 		}
 
-		return blocks;
+		const fetchBlockChildren = async (blockId: string) => {
+			const children: BlockObjectResponse[] = [];
+			let childCursor: string | undefined;
+			do {
+				const response = await notionApi.blocks.children.list({
+					block_id: blockId,
+					page_size: 100,
+					start_cursor: childCursor,
+				});
+				const childBlocks = response.results.filter(
+					(result): result is BlockObjectResponse => result.object === "block",
+				);
+				children.push(...childBlocks);
+				childCursor = response.has_more
+					? (response.next_cursor ?? undefined)
+					: undefined;
+			} while (childCursor);
+			return children;
+		};
+
+		const enrichedBlocks: (BlockObjectResponse & {
+			children?: BlockObjectResponse[];
+		})[] = [];
+
+		for (const block of blocks) {
+			if (
+				block.has_children &&
+				(block.type === "table" ||
+					block.type === "toggle" ||
+					block.type === "bulleted_list_item" ||
+					block.type === "numbered_list_item")
+			) {
+				const children = await fetchBlockChildren(block.id);
+				enrichedBlocks.push({ ...block, children });
+			} else {
+				enrichedBlocks.push(block);
+			}
+		}
+
+		return enrichedBlocks;
 	});

@@ -1,8 +1,12 @@
+export { BookmarkBlock } from "./bookmark";
 export { CalloutBlock } from "./callout";
 export { DividerBlock } from "./divider";
 export { HeadingBlock } from "./heading";
 export { ImageBlock } from "./image";
+export { LinkPreviewBlock } from "./link-preview";
 export { ListItemBlock } from "./list-item";
 export { ParagraphBlock } from "./paragraph";
 export { QuoteBlock } from "./quote";
+export { TableBlock } from "./table";
 export { TodoBlock } from "./todo";
+export { ToggleBlock } from "./toggle";

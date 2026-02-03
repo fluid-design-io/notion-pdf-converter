@@ -1,15 +1,21 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 
-import type { PdfSettings } from "@/lib/pdf-settings";
+import { pdfSettingsParsers } from "@/lib/pdf-settings";
 
-import { pdf } from "@react-pdf/renderer";
-import type { PDFDocumentLoadingTask, PDFDocumentProxy } from "pdfjs-dist";
-import { GlobalWorkerOptions, getDocument } from "pdfjs-dist";
+import { useQueryStates } from "nuqs";
+import {
+	GlobalWorkerOptions,
+	getDocument,
+	type PDFDocumentProxy,
+} from "pdfjs-dist";
 import { Spinner } from "../ui/spinner";
+import { useElementWidth, usePdfBlob } from "./hooks";
 import { PdfDocument } from "./index";
+import { PdfPage } from "./pdf-page";
 import type { NotionBlock } from "./types";
 
-if (typeof window !== "undefined") {
+// Initialize worker once outside component
+if (typeof window !== "undefined" && !GlobalWorkerOptions.workerSrc) {
 	GlobalWorkerOptions.workerSrc = new URL(
 		"pdfjs-dist/build/pdf.worker.min.mjs",
 		import.meta.url,
@@ -19,150 +25,89 @@ if (typeof window !== "undefined") {
 type PdfPreviewProps = {
 	title: string;
 	blocks: NotionBlock[];
-	settings: PdfSettings;
 	onBlobUrlChange?: (url: string | null) => void;
 };
 
 export function PdfPreview({
 	title,
 	blocks,
-	settings,
 	onBlobUrlChange,
 }: PdfPreviewProps) {
-	const containerRef = useRef<HTMLDivElement | null>(null);
-	const [blobUrl, setBlobUrl] = useState<string | null>(null);
-	const [containerWidth, setContainerWidth] = useState(0);
-	const [isRendering, setIsRendering] = useState(false);
+	const [settings] = useQueryStates(pdfSettingsParsers);
+	const { ref: containerRef, width: containerWidth } =
+		useElementWidth<HTMLDivElement>();
 
-	const documentElement = useMemo(
-		() => <PdfDocument title={title} blocks={blocks} settings={settings} />,
-		[title, blocks, settings],
+	const deferredBlocks = useDeferredValue(blocks);
+
+	const { url: blobUrl, loading: isGenerating } = usePdfBlob(
+		() => (
+			<PdfDocument title={title} blocks={deferredBlocks} settings={settings} />
+		),
+		[title, deferredBlocks, settings],
 	);
 
+	// Local state for the loaded PDF.js document
+	const [pdfDoc, setPdfDoc] = useState<PDFDocumentProxy | null>(null);
+	const [isParsing, setIsParsing] = useState(false);
+
+	// Sync blob URL with parent
 	useEffect(() => {
-		const container = containerRef.current;
-		if (!container || typeof ResizeObserver === "undefined") {
+		onBlobUrlChange?.(blobUrl);
+	}, [blobUrl, onBlobUrlChange]);
+
+	// Load the PDF Document when the blob changes
+	useEffect(() => {
+		if (!blobUrl) {
+			setPdfDoc(null);
 			return;
 		}
 
-		const observer = new ResizeObserver((entries) => {
-			const entry = entries[0];
-			if (entry) {
-				setContainerWidth(entry.contentRect.width);
-			}
-		});
-		observer.observe(container);
-
-		return () => observer.disconnect();
-	}, []);
-
-	useEffect(() => {
 		let cancelled = false;
-		let currentUrl: string | null = null;
+		setIsParsing(true);
 
-		setIsRendering(true);
-		const createBlob = async () => {
+		const loadPdf = async () => {
 			try {
-				const blob = await pdf(documentElement).toBlob();
-				if (cancelled) return;
-				currentUrl = URL.createObjectURL(blob);
-				setBlobUrl(currentUrl);
-				onBlobUrlChange?.(currentUrl);
-			} catch {
+				const loadingTask = getDocument(blobUrl);
+				const loadedDoc = await loadingTask.promise;
 				if (!cancelled) {
-					setBlobUrl(null);
-					onBlobUrlChange?.(null);
+					setPdfDoc(loadedDoc);
+					setIsParsing(false);
 				}
+			} catch (e) {
+				if (!cancelled) setIsParsing(false);
 			}
 		};
 
-		void createBlob();
-
+		void loadPdf();
 		return () => {
 			cancelled = true;
-			if (currentUrl) {
-				URL.revokeObjectURL(currentUrl);
-			}
-			onBlobUrlChange?.(null);
 		};
-	}, [documentElement, onBlobUrlChange]);
+	}, [blobUrl]);
 
-	useEffect(() => {
-		if (!blobUrl || !containerRef.current || containerWidth === 0) {
-			return;
-		}
-
-		let cancelled = false;
-		let loadingTask: PDFDocumentLoadingTask | null = null;
-		let currentDocument: PDFDocumentProxy | null = null;
-
-		const renderPages = async () => {
-			setIsRendering(true);
-			const container = containerRef.current;
-			if (!container) return;
-			container.innerHTML = "";
-
-			loadingTask = getDocument(blobUrl);
-			currentDocument = await loadingTask.promise;
-
-			const deviceScale = window.devicePixelRatio || 1;
-			const containerPadding = 32;
-
-			for (
-				let pageNumber = 1;
-				pageNumber <= currentDocument.numPages;
-				pageNumber += 1
-			) {
-				if (cancelled) return;
-				const page = await currentDocument.getPage(pageNumber);
-				const baseViewport = page.getViewport({ scale: 1 });
-				const scale =
-					containerWidth > containerPadding
-						? (containerWidth - containerPadding) / baseViewport.width
-						: 1;
-				const viewport = page.getViewport({ scale });
-
-				const canvas = document.createElement("canvas");
-				const context = canvas.getContext("2d");
-				if (!context) continue;
-
-				canvas.width = viewport.width * deviceScale;
-				canvas.height = viewport.height * deviceScale;
-				canvas.style.width = `${viewport.width}px`;
-				canvas.style.height = `${viewport.height}px`;
-				context.setTransform(deviceScale, 0, 0, deviceScale, 0, 0);
-
-				const pageWrapper = document.createElement("div");
-				pageWrapper.className =
-					"mx-auto my-4 w-fit rounded-xs overflow-hidden bg-background shadow ring-1 ring-border/30";
-				pageWrapper.appendChild(canvas);
-				container.appendChild(pageWrapper);
-
-				await page.render({ canvasContext: context, viewport, canvas }).promise;
-			}
-
-			if (!cancelled) {
-				setIsRendering(false);
-			}
-		};
-
-		void renderPages();
-
-		return () => {
-			cancelled = true;
-			void loadingTask?.destroy();
-			void currentDocument?.destroy();
-		};
-	}, [blobUrl, containerWidth]);
+	const isLoading = isGenerating || isParsing;
 
 	return (
-		<>
-			{isRendering ? (
-				<div className="absolute inset-0 flex items-center justify-center bg-background/50 text-muted-foreground text-xs backdrop-blur-sm">
+		<div className="relative isolate min-h-full">
+			{isLoading && (
+				<div className="fixed inset-0 z-10 flex items-center justify-center bg-background/50 text-muted-foreground text-xs backdrop-blur-sm">
 					<Spinner />
 				</div>
-			) : null}
-			<div ref={containerRef} className="min-h-full" />
-		</>
+			)}
+
+			{/* The Container */}
+			<div ref={containerRef} className="min-h-full">
+				{/* Render pages declaratively */}
+				{pdfDoc &&
+					containerWidth > 0 &&
+					Array.from({ length: pdfDoc.numPages }, (_, i) => (
+						<PdfPage
+							key={`page-${i + 1}`}
+							pdfDoc={pdfDoc}
+							pageNumber={i + 1}
+							width={containerWidth - 32} // padding logic
+						/>
+					))}
+			</div>
+		</div>
 	);
 }

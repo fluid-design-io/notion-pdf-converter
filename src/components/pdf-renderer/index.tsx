@@ -6,6 +6,11 @@ import { Document, Font, Page, StyleSheet, Text } from "@react-pdf/renderer";
 import { NotionRenderer } from "./notion-renderer";
 import type { NotionBlock } from "./types";
 
+const MONO_FONTS = {
+	400: "https://cdn.jsdelivr.net/fontsource/fonts/monaspace-neon@latest/latin-400-normal.woff2",
+	700: "https://cdn.jsdelivr.net/fontsource/fonts/monaspace-neon@latest/latin-700-normal.woff2",
+};
+
 const defaultPageStyle = StyleSheet.create({
 	page: { fontSize: 12, color: "#0f172a" },
 });
@@ -14,6 +19,14 @@ type PdfDocumentProps = {
 	blocks: NotionBlock[];
 	settings: PdfSettings;
 };
+
+Font.register({
+	family: "Monospace",
+	fonts: [
+		{ src: MONO_FONTS[400], fontWeight: 400 },
+		{ src: MONO_FONTS[700], fontWeight: 700 },
+	],
+});
 
 export function PdfDocument({ title, blocks, settings }: PdfDocumentProps) {
 	const activeFont = FONTS.find((font) => font.family === settings.font);

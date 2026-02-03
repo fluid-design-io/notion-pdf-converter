@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 import { Field, FieldLabel } from "@/components/ui/field";
 import {
 	ToggleGroup,
@@ -24,16 +26,15 @@ export const SettingsPanelThemeField = () => {
 				}}
 			>
 				{themeOptions.map((option, index) => (
-					<>
+					<Fragment key={`theme-${option}`}>
 						<ToggleGroupItem
-							key={option}
 							value={option}
 							className="hover:bg-background data-pressed:bg-background"
 						>
 							{option === "light" ? "Light" : "Dark"}
 						</ToggleGroupItem>
 						{index !== themeOptions.length - 1 && <ToggleGroupSeparator />}
-					</>
+					</Fragment>
 				))}
 			</ToggleGroup>
 		</Field>
