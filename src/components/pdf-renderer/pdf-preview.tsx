@@ -38,7 +38,7 @@ export function PdfPreview({
 }: PdfPreviewProps) {
 	const [settings] = useQueryStates(pdfSettingsParsers);
 	const { ref: containerRef, width: containerWidth } =
-		useElementWidth<HTMLDivElement>();
+		useElementWidth<HTMLDivElement>(1024);
 
 	const deferredBlocks = useDeferredValue(blocks);
 
@@ -103,18 +103,19 @@ export function PdfPreview({
 		overscan: 3,
 	});
 
+	useEffect(() => {
+		virtualizer.measure();
+	}, [containerWidth]);
+
 	return (
-		<div className="relative overflow-hidden rounded border bg-background">
+		<div className="relative overflow-y-hidden">
 			{isLoading && (
 				<div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50 text-muted-foreground text-xs backdrop-blur-sm">
 					<Spinner />
 				</div>
 			)}
 
-			<ScrollArea
-				ref={containerRef}
-				className="h-[calc(100vh-3rem)] w-full overflow-hidden"
-			>
+			<ScrollArea ref={containerRef} className="h-full w-full">
 				{/* Render pages declaratively */}
 				{pdfDoc && containerWidth > 0 && (
 					<div

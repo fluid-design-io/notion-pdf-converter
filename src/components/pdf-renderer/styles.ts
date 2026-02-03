@@ -55,7 +55,7 @@ export const getRendererStyles = (
 	const pageTitleStyle = {
 		fontSize: settings.fontSize * 2,
 		fontWeight: 700,
-		marginBottom: spacing * 2,
+		marginBottom: spacing * 3,
 		fontFamily: settings.font,
 	} as const;
 

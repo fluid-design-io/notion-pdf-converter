@@ -1,11 +1,12 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 
 import { type DocumentProps, usePDF } from "@react-pdf/renderer";
+import { useThrottledState } from "@tanstack/react-pacer";
 
 // Hook for measuring element size
-export function useElementWidth<T extends HTMLElement>() {
+export function useElementWidth<T extends HTMLElement>(maxWidth?: number) {
 	const ref = useRef<T>(null);
-	const [width, setWidth] = useState(0);
+	const [width, setWidth] = useThrottledState(0, { wait: 200 });
 
 	useLayoutEffect(() => {
 		if (!ref.current) return;
@@ -14,7 +15,7 @@ export function useElementWidth<T extends HTMLElement>() {
 			const entry = entries[0];
 			if (entry) {
 				// Use contentRect for precise content box measurement
-				setWidth(entry.contentRect.width);
+				setWidth(Math.min(entry.contentRect.width, maxWidth ?? Infinity));
 			}
 		});
 

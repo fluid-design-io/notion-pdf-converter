@@ -1,9 +1,12 @@
 import { useState } from "react";
 
+import { EditorSidebar } from "@/components/editor/editor-sidebar";
 import { PdfPreview } from "@/components/pdf-renderer/pdf-preview";
-import { SettingsPanel } from "@/components/settings-panel";
-import { FieldGroup } from "@/components/ui/field";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+	Sidebar,
+	SidebarInset,
+	SidebarProvider,
+} from "@/components/ui/sidebar";
 
 import { createFileRoute } from "@tanstack/react-router";
 import { fetchNotionBlocks, fetchNotionPage } from "@/server/notion";
@@ -42,42 +45,17 @@ function EditorPage() {
 	};
 
 	return (
-		<div className="flex h-svh bg-muted text-foreground">
-			<main className="relative flex flex-1 flex-col p-6">
+		<SidebarProvider className="h-svh bg-sidebar text-sidebar-foreground">
+			<SidebarInset className="relative bg-sidebar">
 				<PdfPreview
 					title={pageTitle}
 					blocks={blocks}
 					onBlobUrlChange={setDownloadUrl}
 				/>
-
-				<div className="absolute right-8 bottom-8 z-10 border border-border bg-background px-1.5 py-0.5 font-medium font-mono text-foreground/80 text-xs">
-					preview
-				</div>
-			</main>
-			<ScrollArea render={<aside />} className="h-svh w-full max-w-xs">
-				<div className="py-6 pr-6">
-					<SettingsPanel downloadUrl={downloadUrl} onDownload={handleDownload}>
-						<SettingsPanel.Header />
-						<SettingsPanel.Actions />
-						<FieldGroup className="gap-4">
-							{/* <SettingsPanel.PresetField />
-							<SettingsPanel.SavePresetField /> */}
-							<SettingsPanel.ThemeField />
-							<SettingsPanel.FontField />
-							<SettingsPanel.FontSizeField />
-							<SettingsPanel.LineHeightField />
-							<SettingsPanel.HeadingScaleField />
-							<SettingsPanel.MarginsField />
-							<SettingsPanel.HeaderField />
-							<SettingsPanel.FooterField />
-							<SettingsPanel.PageSizeField />
-							<SettingsPanel.OrientationField />
-							<SettingsPanel.PageBreakField />
-						</FieldGroup>
-						<SettingsPanel.Footer />
-					</SettingsPanel>
-				</div>
-			</ScrollArea>
-		</div>
+			</SidebarInset>
+			<Sidebar side="right" collapsible="icon" variant="inset">
+				<EditorSidebar downloadUrl={downloadUrl} onDownload={handleDownload} />
+			</Sidebar>
+		</SidebarProvider>
 	);
 }

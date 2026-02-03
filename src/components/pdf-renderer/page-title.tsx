@@ -1,13 +1,12 @@
-
 import { Text } from "@react-pdf/renderer";
-import { BlockStyles } from "./styles";
+import type { BlockStyles } from "./styles";
 
 export const PageTitle = ({
 	title,
-    styles,
+	styles,
 }: {
 	title: string;
-    styles:BlockStyles["pageTitle"]
+	styles: BlockStyles["pageTitle"];
 }) => {
 	if (!title) return null;
 	return <Text style={styles}>{title}</Text>;

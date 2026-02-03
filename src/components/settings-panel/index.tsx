@@ -5,7 +5,6 @@ import { usePresetsStore } from "@/lib/presets-store";
 
 import { useRouter } from "@tanstack/react-router";
 import { useQueryStates } from "nuqs";
-import { SettingsPanelActions } from "./actions";
 import { SettingsPanelContextProvider } from "./context";
 import { SettingsPanelFontField } from "./font-field";
 import { SettingsPanelFontSizeField } from "./font-size-field";
@@ -122,7 +121,6 @@ const SettingsPanelRoot = (
 ) => <SettingsPanelProvider {...props}>{props.children}</SettingsPanelProvider>;
 
 export const SettingsPanel = Object.assign(SettingsPanelRoot, {
-	Actions: SettingsPanelActions,
 	Header: SettingsPanelHeader,
 	PresetField: SettingsPanelPresetField,
 	SavePresetField: SettingsPanelSavePresetField,

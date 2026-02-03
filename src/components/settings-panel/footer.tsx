@@ -1,15 +1,45 @@
+import { IconDownload, IconRefresh, IconRotate2 } from "@tabler/icons-react";
+
 import { Button } from "@/components/ui/button";
+import {
+	ButtonGroup,
+	ButtonGroupSeparator,
+} from "@/components/ui/button-group";
 
 import { useSettingsPanelContext } from "./context";
 
 export const SettingsPanelFooter = () => {
-	const { resetSettings } = useSettingsPanelContext();
+	const { downloadUrl, onDownload, onRefresh, resetSettings } =
+		useSettingsPanelContext();
 
 	return (
-		<div className="mt-8">
-			<Button variant="ghost" size="sm" onClick={resetSettings}>
-				Reset to defaults
+		<ButtonGroup aria-label="Settings actions" className="w-full justify-end">
+			<Button
+				variant="outline"
+				size="icon-sm"
+				onClick={onDownload}
+				disabled={!downloadUrl}
+				aria-label="Download PDF"
+			>
+				<IconDownload />
 			</Button>
-		</div>
+			<Button
+				variant="outline"
+				size="icon-sm"
+				onClick={onRefresh}
+				aria-label="Refresh"
+			>
+				<IconRefresh />
+			</Button>
+			<ButtonGroupSeparator />
+			<Button
+				variant="outline"
+				size="icon-sm"
+				onClick={resetSettings}
+				aria-label="Reset to defaults"
+			>
+				<IconRotate2 />
+			</Button>
+		</ButtonGroup>
 	);
 };

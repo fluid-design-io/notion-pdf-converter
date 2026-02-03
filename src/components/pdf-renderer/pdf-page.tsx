@@ -67,7 +67,7 @@ export const PdfPage = ({
 		};
 	}, [pdfDoc, pageNumber, width]);
 	return (
-		<div className="mx-auto my-4 w-fit overflow-hidden rounded-xs bg-background shadow ring-1 ring-border/30">
+		<div className="mx-auto my-4 w-fit overflow-hidden rounded-lg bg-background shadow ring-1 ring-border/30 dark:shadow-black/15 dark:shadow-lg dark:ring-border/75">
 			<canvas ref={canvasRef} className="bg-background" />
 		</div>
 	);
