@@ -1,28 +1,35 @@
+import { TW_COLORS } from "@/lib/colors";
 import type { PdfSettings } from "@/lib/pdf-settings";
 
 import { StyleSheet } from "@react-pdf/renderer";
 
+export const COLORS = {
+	light: {
+		pageBackground: "#ffffff",
+		text: TW_COLORS.neutral[950],
+		muted: TW_COLORS.neutral[200],
+		divider: TW_COLORS.neutral[200],
+		link: TW_COLORS.blue[500],
+		codeForeground: TW_COLORS.red[600],
+		codeBackground: TW_COLORS.neutral[100],
+		tableHeaderBg: TW_COLORS.neutral[200],
+	},
+	dark: {
+		pageBackground: TW_COLORS.neutral[900],
+		text: TW_COLORS.neutral[50],
+		muted: TW_COLORS.neutral[800],
+		divider: TW_COLORS.neutral[800],
+		link: "#38bdf8",
+		codeForeground: "#EB5758",
+		codeBackground: TW_COLORS.neutral[800],
+		tableHeaderBg: TW_COLORS.neutral[800],
+	},
+};
+
 export const createBlockStyles = (settings: PdfSettings) => {
 	const baseSize = settings.fontSize;
 	const spacing = Math.max(baseSize * 0.6, 6);
-	const colors =
-		settings.theme === "dark"
-			? {
-					text: "#f8fafc",
-					muted: "#cbd5f5",
-					divider: "#334155",
-					link: "#38bdf8",
-					code: "#1e293b",
-					tableHeaderBg: "#1f2937",
-				}
-			: {
-					text: "#0f172a",
-					muted: "#475569",
-					divider: "#e2e8f0",
-					link: "#2563eb",
-					code: "#e2e8f0",
-					tableHeaderBg: "#f1f5f9",
-				};
+	const colors = COLORS[settings.theme];
 
 	return StyleSheet.create({
 		paragraph: {
@@ -56,10 +63,10 @@ export const createBlockStyles = (settings: PdfSettings) => {
 		},
 		listItem: {
 			flexDirection: "row",
+			flexWrap: "wrap",
 			marginBottom: spacing * 0.6,
 			fontFamily: settings.font,
 			paddingLeft: baseSize * 1.6,
-			flexWrap: "wrap",
 		},
 		listBullet: {
 			width: baseSize * 1.2,
@@ -113,9 +120,11 @@ export const createBlockStyles = (settings: PdfSettings) => {
 			fontFamily: settings.font,
 		},
 		code: {
-			backgroundColor: colors.code,
-			borderRadius: 2,
-			paddingHorizontal: 2,
+			backgroundColor: colors.codeBackground,
+			color: colors.codeForeground,
+			borderRadius: 6,
+			paddingHorizontal: 6,
+			paddingVertical: baseSize * 0.1,
 			fontFamily: "Monospace",
 		},
 		callout: {

@@ -4,12 +4,8 @@ import type { PdfSettings } from "@/lib/pdf-settings";
 import type { PageProps } from "@react-pdf/renderer";
 import { Document, Font, Page, StyleSheet, Text } from "@react-pdf/renderer";
 import { NotionRenderer } from "./notion-renderer";
+import { COLORS } from "./styles";
 import type { NotionBlock } from "./types";
-
-const MONO_FONTS = {
-	400: "https://cdn.jsdelivr.net/fontsource/fonts/monaspace-neon@latest/latin-400-normal.woff2",
-	700: "https://cdn.jsdelivr.net/fontsource/fonts/monaspace-neon@latest/latin-700-normal.woff2",
-};
 
 const defaultPageStyle = StyleSheet.create({
 	page: { fontSize: 12, color: "#0f172a" },
@@ -20,11 +16,18 @@ type PdfDocumentProps = {
 	settings: PdfSettings;
 };
 
+// Register monospace font (400 and 700 only for code blocks)
 Font.register({
 	family: "Monospace",
 	fonts: [
-		{ src: MONO_FONTS[400], fontWeight: 400 },
-		{ src: MONO_FONTS[700], fontWeight: 700 },
+		{
+			src: "https://cdn.jsdelivr.net/fontsource/fonts/monaspace-neon@latest/latin-400-normal.woff",
+			fontWeight: 400,
+		},
+		{
+			src: "https://cdn.jsdelivr.net/fontsource/fonts/monaspace-neon@latest/latin-700-normal.woff",
+			fontWeight: 700,
+		},
 	],
 });
 
@@ -36,6 +39,7 @@ export function PdfDocument({ title, blocks, settings }: PdfDocumentProps) {
 			fonts: [...activeFont.fonts],
 		});
 	}
+	const colors = COLORS[settings.theme];
 	const pageStyle = {
 		...defaultPageStyle.page,
 		fontSize: settings.fontSize,
@@ -44,15 +48,15 @@ export function PdfDocument({ title, blocks, settings }: PdfDocumentProps) {
 		paddingRight: settings.marginRight * 28.3465,
 		paddingBottom: settings.marginBottom * 28.3465,
 		paddingLeft: settings.marginLeft * 28.3465,
-		backgroundColor: settings.theme === "dark" ? "#0f172a" : "#ffffff",
-		color: settings.theme === "dark" ? "#f8fafc" : "#0f172a",
+		backgroundColor: colors.pageBackground,
+		color: colors.text,
 		...(settings.font ? { fontFamily: settings.font } : {}),
 	} as const;
 
 	const pageSize = settings.pageSize.toUpperCase() as PageProps["size"];
 	return (
 		<Document
-			title="Notion PDF"
+			title={title}
 			subject={settings.notionUrl}
 			author={settings.notionUrl}
 			creator={settings.notionUrl}

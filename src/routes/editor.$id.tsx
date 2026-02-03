@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { useState } from "react";
 
 import { PdfPreview } from "@/components/pdf-renderer/pdf-preview";
 import { SettingsPanel } from "@/components/settings-panel";
@@ -40,15 +40,12 @@ function EditorPage() {
 	return (
 		<div className="flex h-svh bg-muted text-foreground">
 			<main className="relative flex flex-1 flex-col p-6">
-				<ScrollArea className="h-[calc(100vh-3rem)] w-full overflow-hidden rounded border bg-background">
-					<Suspense fallback={<div>Loading...</div>}>
-						<PdfPreview
-							title={pageTitle}
-							blocks={blocks}
-							onBlobUrlChange={setDownloadUrl}
-						/>
-					</Suspense>
-				</ScrollArea>
+				<PdfPreview
+					title={pageTitle}
+					blocks={blocks}
+					onBlobUrlChange={setDownloadUrl}
+				/>
+
 				<div className="absolute right-8 bottom-8 z-10 border border-border bg-background px-1.5 py-0.5 font-medium font-mono text-foreground/80 text-xs">
 					preview
 				</div>

@@ -16,6 +16,7 @@
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@fontsource/outfit": "^5.2.8",
     "@fontsource/roboto": "^5.2.9",
+    "@fontsource/monaspace-neon": "^5.2.5",
     "@notionhq/client": "^5.9.0",
     "@react-pdf/renderer": "^4.3.2",
     "@tabler/icons-react": "^3.36.1",

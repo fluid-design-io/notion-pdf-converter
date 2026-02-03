@@ -8,6 +8,7 @@ import {
 	getDocument,
 	type PDFDocumentProxy,
 } from "pdfjs-dist";
+import { ScrollArea } from "../ui/scroll-area";
 import { Spinner } from "../ui/spinner";
 import { useElementWidth, usePdfBlob } from "./hooks";
 import { PdfDocument } from "./index";
@@ -87,27 +88,29 @@ export function PdfPreview({
 	const isLoading = isGenerating || isParsing;
 
 	return (
-		<div className="relative isolate min-h-full">
+		<div className="relative overflow-hidden rounded border bg-background">
 			{isLoading && (
-				<div className="fixed inset-0 z-10 flex items-center justify-center bg-background/50 text-muted-foreground text-xs backdrop-blur-sm">
+				<div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50 text-muted-foreground text-xs backdrop-blur-sm">
 					<Spinner />
 				</div>
 			)}
 
-			{/* The Container */}
-			<div ref={containerRef} className="min-h-full">
-				{/* Render pages declaratively */}
-				{pdfDoc &&
-					containerWidth > 0 &&
-					Array.from({ length: pdfDoc.numPages }, (_, i) => (
-						<PdfPage
-							key={`page-${i + 1}`}
-							pdfDoc={pdfDoc}
-							pageNumber={i + 1}
-							width={containerWidth - 32} // padding logic
-						/>
-					))}
-			</div>
+			<ScrollArea className="h-[calc(100vh-3rem)] w-full overflow-hidden">
+				{/* The Container */}
+				<div ref={containerRef} className="min-h-full">
+					{/* Render pages declaratively */}
+					{pdfDoc &&
+						containerWidth > 0 &&
+						Array.from({ length: pdfDoc.numPages }, (_, i) => (
+							<PdfPage
+								key={`page-${i + 1}`}
+								pdfDoc={pdfDoc}
+								pageNumber={i + 1}
+								width={containerWidth - 32} // padding logic
+							/>
+						))}
+				</div>
+			</ScrollArea>
 		</div>
 	);
 }
