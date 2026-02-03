@@ -1,7 +1,9 @@
 import { useDeferredValue, useEffect, useState } from "react";
 
+import { getPageAspectRatio } from "@/lib/pdf-page-sizes";
 import { pdfSettingsParsers } from "@/lib/pdf-settings";
 
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { useQueryStates } from "nuqs";
 import {
 	GlobalWorkerOptions,
@@ -74,7 +76,7 @@ export function PdfPreview({
 					setPdfDoc(loadedDoc);
 					setIsParsing(false);
 				}
-			} catch (e) {
+			} catch {
 				if (!cancelled) setIsParsing(false);
 			}
 		};
@@ -86,6 +88,18 @@ export function PdfPreview({
 	}, [blobUrl]);
 
 	const isLoading = isGenerating || isParsing;
+	const pageWidth = Math.max(containerWidth - 32, 0);
+	const pageGap = 32;
+	const virtualizer = useVirtualizer({
+		count: pdfDoc?.numPages ?? 0,
+		getScrollElement: () =>
+			containerRef.current?.querySelector(
+				'[data-slot="scroll-area-viewport"]',
+			) as HTMLDivElement | null,
+		estimateSize: () =>
+			Math.max(pageWidth * getPageAspectRatio(settings) + pageGap, 0),
+		overscan: 3,
+	});
 
 	return (
 		<div className="relative overflow-hidden rounded border bg-background">
@@ -95,21 +109,33 @@ export function PdfPreview({
 				</div>
 			)}
 
-			<ScrollArea className="h-[calc(100vh-3rem)] w-full overflow-hidden">
-				{/* The Container */}
-				<div ref={containerRef} className="min-h-full">
-					{/* Render pages declaratively */}
-					{pdfDoc &&
-						containerWidth > 0 &&
-						Array.from({ length: pdfDoc.numPages }, (_, i) => (
-							<PdfPage
-								key={`page-${i + 1}`}
-								pdfDoc={pdfDoc}
-								pageNumber={i + 1}
-								width={containerWidth - 32} // padding logic
-							/>
+			<ScrollArea
+				ref={containerRef}
+				className="h-[calc(100vh-3rem)] w-full overflow-hidden"
+			>
+				{/* Render pages declaratively */}
+				{pdfDoc && containerWidth > 0 && (
+					<div
+						className="relative w-full"
+						style={{ height: virtualizer.getTotalSize() }}
+					>
+						{virtualizer.getVirtualItems().map((virtualRow) => (
+							<div
+								key={virtualRow.key}
+								className="absolute top-0 left-0 w-full"
+								style={{
+									transform: `translateY(${virtualRow.start}px)`,
+								}}
+							>
+								<PdfPage
+									pdfDoc={pdfDoc}
+									pageNumber={virtualRow.index + 1}
+									width={pageWidth}
+								/>
+							</div>
 						))}
-				</div>
+					</div>
+				)}
 			</ScrollArea>
 		</div>
 	);

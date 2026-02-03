@@ -14,9 +14,9 @@
   "dependencies": {
     "@base-ui/react": "^1.1.0",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@fontsource/monaspace-neon": "^5.2.5",
     "@fontsource/outfit": "^5.2.8",
     "@fontsource/roboto": "^5.2.9",
-    "@fontsource/monaspace-neon": "^5.2.5",
     "@notionhq/client": "^5.9.0",
     "@react-pdf/renderer": "^4.3.2",
     "@tabler/icons-react": "^3.36.1",
@@ -28,6 +28,7 @@
     "@tanstack/react-router-devtools": "^1.157.16",
     "@tanstack/react-router-ssr-query": "^1.157.16",
     "@tanstack/react-start": "^1.157.16",
+    "@tanstack/react-virtual": "^3.13.18",
     "@tanstack/router-plugin": "^1.157.16",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
