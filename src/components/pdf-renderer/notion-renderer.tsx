@@ -15,12 +15,13 @@ import {
 	TodoBlock,
 	ToggleBlock,
 } from "./blocks";
-import { createBlockStyles } from "./styles";
+import type { BlockStyles } from "./styles";
 import type { BlockByType, NotionBlock } from "./types";
 
 type NotionRendererProps = {
 	blocks: NotionBlock[];
 	settings: PdfSettings;
+	styles: BlockStyles;
 };
 
 const shouldBreakBefore = (
@@ -36,8 +37,11 @@ const shouldBreakBefore = (
 	return false;
 };
 
-export function NotionRenderer({ blocks, settings }: NotionRendererProps) {
-	const styles = createBlockStyles(settings);
+export function NotionRenderer({
+	blocks,
+	settings,
+	styles,
+}: NotionRendererProps) {
 	let listKind: "bulleted" | "numbered" | null = null;
 	let listIndex = 1;
 	const isDev = import.meta.env.DEV;
@@ -92,6 +96,7 @@ export function NotionRenderer({ blocks, settings }: NotionRendererProps) {
 										<NotionRenderer
 											blocks={bulletedChildren}
 											settings={settings}
+											styles={styles}
 										/>
 									</View>
 								) : null}
@@ -118,6 +123,7 @@ export function NotionRenderer({ blocks, settings }: NotionRendererProps) {
 										<NotionRenderer
 											blocks={numberedChildren}
 											settings={settings}
+											styles={styles}
 										/>
 									</View>
 								) : null}
@@ -185,6 +191,7 @@ export function NotionRenderer({ blocks, settings }: NotionRendererProps) {
 										<NotionRenderer
 											blocks={toggleChildren}
 											settings={settings}
+											styles={styles}
 										/>
 									</View>
 								) : null}

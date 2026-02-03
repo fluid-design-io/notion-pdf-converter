@@ -3,6 +3,8 @@ import type { PdfSettings } from "@/lib/pdf-settings";
 
 import { StyleSheet } from "@react-pdf/renderer";
 
+const POINTS_PER_CM = 28.3465;
+
 export const COLORS = {
 	light: {
 		pageBackground: "#ffffff",
@@ -28,12 +30,66 @@ export const COLORS = {
 	},
 };
 
-export const createBlockStyles = (settings: PdfSettings) => {
+export type PageStyleOptions = {
+	hasHeader?: boolean;
+	hasFooter?: boolean;
+};
+
+export const getRendererStyles = (
+	settings: PdfSettings,
+	options: PageStyleOptions = {},
+) => {
+	const { hasHeader = false, hasFooter = false } = options;
 	const baseSize = settings.fontSize;
 	const spacing = Math.max(baseSize * 0.6, 6);
 	const colors = COLORS[settings.theme];
 
-	return StyleSheet.create({
+	const marginTop = settings.marginTop * POINTS_PER_CM;
+	const marginRight = settings.marginRight * POINTS_PER_CM;
+	const marginBottom = settings.marginBottom * POINTS_PER_CM;
+	const marginLeft = settings.marginLeft * POINTS_PER_CM;
+
+	const headerFooterFontSize = Math.max(settings.fontSize * 0.8, 8);
+	const headerFooterHeight = Math.max(headerFooterFontSize * 1.6, 16);
+
+	const pageTitleStyle = {
+		fontSize: settings.fontSize * 2,
+		fontWeight: 700,
+		marginBottom: spacing * 2,
+		fontFamily: settings.font,
+	} as const;
+
+	const pageStyle = {
+		fontSize: settings.fontSize,
+		lineHeight: settings.lineHeight,
+		paddingTop: marginTop + (hasHeader ? headerFooterHeight : 0),
+		paddingRight: marginRight,
+		paddingBottom: marginBottom + (hasFooter ? headerFooterHeight : 0),
+		paddingLeft: marginLeft,
+		backgroundColor: colors.pageBackground,
+		color: colors.text,
+		fontFamily: settings.font,
+	} as const;
+
+	const headerFooterTextStyle = {
+		width: "50%",
+		height: "100%",
+		fontSize: headerFooterFontSize,
+		lineHeight: 1.2,
+		color: colors.mutedForeground,
+		fontFamily: settings.font,
+	} as const;
+
+	const headerFooterContainerStyle = {
+		position: "absolute" as const,
+		left: marginLeft,
+		right: marginRight,
+		flexDirection: "row" as const,
+		alignItems: "center" as const,
+		height: headerFooterHeight,
+	} as const;
+
+	const blockStyles = StyleSheet.create({
 		paragraph: {
 			color: colors.text,
 			marginBottom: spacing,
@@ -246,6 +302,20 @@ export const createBlockStyles = (settings: PdfSettings) => {
 			textDecoration: "line-through",
 		},
 	});
+
+	return {
+		...blockStyles,
+		page: pageStyle,
+		pageTitle: pageTitleStyle,
+		headerFooterText: headerFooterTextStyle,
+		headerFooterContainer: headerFooterContainerStyle,
+		margins: {
+			top: marginTop,
+			right: marginRight,
+			bottom: marginBottom,
+			left: marginLeft,
+		},
+	};
 };
 
-export type BlockStyles = ReturnType<typeof createBlockStyles>;
+export type BlockStyles = ReturnType<typeof getRendererStyles>;

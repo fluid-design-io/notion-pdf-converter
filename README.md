@@ -15,7 +15,7 @@ This project renders Notion pages into PDFs using `@react-pdf/renderer`, then pr
 
 ### Styling (React-PDF styles)
 - Block-level styles live in `src/components/pdf-renderer/styles.ts`
-- `createBlockStyles(settings)` centralizes typography, spacing, and theming
+- `getRendererStyles(settings)` centralizes typography, spacing, and theming
 - Use these styles inside each block renderer for consistent layout
 
 ### Display (PDF.js preview)
@@ -43,7 +43,7 @@ This project renders Notion pages into PDFs using `@react-pdf/renderer`, then pr
 3. **Wire it in**
    - Add a `case` to the switch in `src/components/pdf-renderer/notion-renderer.tsx`
 4. **Add styles**
-   - Extend `createBlockStyles` in `src/components/pdf-renderer/styles.ts` as needed
+   - Extend `getRendererStyles` in `src/components/pdf-renderer/styles.ts` as needed
 5. **Handle children (if any)**
    - Follow the patterns in list items or toggles for recursive rendering
 6. **Validate data**
