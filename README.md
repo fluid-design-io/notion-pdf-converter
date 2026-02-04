@@ -1,4 +1,10 @@
-# Notion PDF Preview
+<div align="center">
+  <img width="256" height="256" alt="logo" style="margin:0 auto;" src="https://github.com/user-attachments/assets/79461b0c-c9b9-421d-a45d-242476f1f107" />
+</div>
+
+# Papyr PDF
+
+Extended Notion page export
 
 This project renders Notion pages into PDFs using `@react-pdf/renderer`, then previews them in the browser via `pdfjs-dist`.
 
