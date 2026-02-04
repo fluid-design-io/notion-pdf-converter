@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { parsePageId } from "@/lib/notion/utils";
 
 import { useForm } from "@tanstack/react-form";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({ component: App });
 
@@ -114,6 +114,22 @@ function App() {
 						</form>
 					</CardContent>
 				</Card>
+
+				<footer className="text-center text-muted-foreground text-sm">
+					<Link
+						to="/privacy"
+						className="underline underline-offset-4 hover:text-foreground"
+					>
+						Privacy Policy
+					</Link>
+					{" · "}
+					<Link
+						to="/terms"
+						className="underline underline-offset-4 hover:text-foreground"
+					>
+						Terms of Use
+					</Link>
+				</footer>
 			</div>
 		</div>
 	);
