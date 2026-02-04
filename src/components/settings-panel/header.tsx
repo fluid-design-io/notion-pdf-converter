@@ -1,11 +1,11 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
+import Logo from "../logo";
+
 export const SettingsPanelHeader = () => {
 	return (
 		<div className="flex items-center justify-between">
-			<div className="flex items-center gap-2 font-semibold text-sm tracking-wider">
-				N→P Editor
-			</div>
+			<Logo className="h-6" />
 			<SidebarTrigger />
 		</div>
 	);

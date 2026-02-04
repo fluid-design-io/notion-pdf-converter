@@ -58,7 +58,7 @@ const HeaderFooterSideControls = ({
 					disabled={!enabled}
 				>
 					<SelectTrigger size="sm" className="min-w-36">
-						<SelectValue />
+						<SelectValue className="capitalize" />
 					</SelectTrigger>
 					<SelectContent>
 						{headerFooterContentOptions.map((option) => (

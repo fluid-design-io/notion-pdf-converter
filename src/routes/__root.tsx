@@ -28,7 +28,11 @@ export const Route = createRootRouteWithContext<{
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "Notion to PDF",
+				title: "Papyr PDF",
+			},
+			{
+				description:
+					"Export better PDFs with advanced customization. Take control of fonts, margins, and page sizes to create print-ready documents from your favorite workspace.",
 			},
 		],
 		links: [
