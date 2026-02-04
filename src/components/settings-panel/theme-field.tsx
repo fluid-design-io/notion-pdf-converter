@@ -16,7 +16,7 @@ export const SettingsPanelThemeField = () => {
 
 	return (
 		<Field>
-			<FieldLabel>Theme</FieldLabel>
+			<FieldLabel>Document Theme</FieldLabel>
 			<ToggleGroup
 				variant="outline"
 				value={[settings.theme]}

@@ -1,14 +1,14 @@
 {
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.removeUnusedImports": "explicit",
-    "source.fixAll.biome": "explicit",
-    "source.organizeImports.biome": "explicit"
-  },
-  "workbench.colorCustomizations": {
-    "titleBar.activeBackground": "#B981D2",
-    "titleBar.activeForeground": "#1A0C24",
-    "titleBar.inactiveBackground": "#BEA8D4",
-    "titleBar.inactiveForeground": "#3C5367"
-  }
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.removeUnusedImports": "explicit",
+		"source.fixAll.biome": "explicit",
+		"source.organizeImports.biome": "explicit"
+	},
+	"workbench.colorCustomizations": {
+		"titleBar.activeBackground": "#B981D2",
+		"titleBar.activeForeground": "#1A0C24",
+		"titleBar.inactiveBackground": "#BEA8D4",
+		"titleBar.inactiveForeground": "#3C5367"
+	}
 }

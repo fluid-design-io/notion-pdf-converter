@@ -7,6 +7,7 @@
       "dependencies": {
         "@base-ui/react": "^1.1.0",
         "@fontsource-variable/jetbrains-mono": "^5.2.8",
+        "@fontsource/lora": "^5.2.8",
         "@fontsource/monaspace-neon": "^5.2.5",
         "@fontsource/outfit": "^5.2.8",
         "@fontsource/roboto": "^5.2.9",
@@ -238,6 +239,8 @@
     "@floating-ui/utils": ["@floating-ui/utils@0.2.10", "", {}, "sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ=="],
 
     "@fontsource-variable/jetbrains-mono": ["@fontsource-variable/jetbrains-mono@5.2.8", "", {}, "sha512-WBA9elru6Jdp5df2mES55wuOO0WIrn3kpXnI4+W2ek5u3ZgLS9XS4gmIlcQhiZOWEKl95meYdvK7xI+ETLCq/Q=="],
+
+    "@fontsource/lora": ["@fontsource/lora@5.2.8", "", {}, "sha512-AQlfsHw4TP1x/eb2IZ6VjQ70ctKa39m9JN9A4zlvDOeKYLrCs+GaYIEQ86Y6YfSPGHn01bErXkRcyktOW0LOPQ=="],
 
     "@fontsource/monaspace-neon": ["@fontsource/monaspace-neon@5.2.5", "", {}, "sha512-TjSSuHC37DroyhP5YCKRCAxdUb3In/uqHzqqW/8Ul+JWilz37d8lr8jFeapnbD3QdYXgiQoU2Rf/CmTdyl06DA=="],
 

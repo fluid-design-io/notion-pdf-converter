@@ -38,14 +38,8 @@
 					"level": "warn",
 					"fix": "safe",
 					"options": {
-						"attributes": [
-							"classList"
-						],
-						"functions": [
-							"clsx",
-							"cva",
-							"cn"
-						]
+						"attributes": ["classList"],
+						"functions": ["clsx", "cva", "cn"]
 					}
 				}
 			}
@@ -67,28 +61,13 @@
 					"level": "on",
 					"options": {
 						"groups": [
-							[
-								"next",
-								"next/**",
-								"react",
-								"react-dom",
-								"@tabler/icons-react"
-							],
+							["next", "next/**", "react", "react-dom", "@tabler/icons-react"],
 							":BLANK_LINE:",
-							[
-								"@/components",
-								"@/components/**"
-							],
+							["@/components", "@/components/**"],
 							":BLANK_LINE:",
-							[
-								"@/lib",
-								"@/lib/**"
-							],
+							["@/lib", "@/lib/**"],
 							":BLANK_LINE:",
-							[
-								"@/hooks",
-								"@/hooks/**"
-							]
+							["@/hooks", "@/hooks/**"]
 						]
 					}
 				}

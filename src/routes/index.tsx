@@ -28,6 +28,14 @@ function App() {
 		defaultValues: {
 			url: "",
 		},
+		validators: {
+			onSubmit: ({ value }) => {
+				if (value.url.trim().length === 0) {
+					return "Please provide a Notion URL.";
+				}
+				return undefined;
+			},
+		},
 		onSubmit: async ({ value }) => {
 			const trimmed = value.url.trim();
 			if (!trimmed) return;
@@ -68,15 +76,7 @@ function App() {
 							}}
 						>
 							<FieldGroup>
-								<form.Field
-									name="url"
-									validators={{
-										onBlur: ({ value }) =>
-											value.trim().length === 0
-												? "Please provide a Notion URL."
-												: undefined,
-									}}
-								>
+								<form.Field name="url">
 									{(field) => {
 										const isInvalid =
 											field.state.meta.isTouched &&

@@ -1,6 +1,6 @@
+import { FontPicker } from "@/components/font-picker";
 import { Field, FieldLabel } from "@/components/ui/field";
 
-import { FontPicker } from "@/components/font-picker";
 import { FONTS } from "@/lib/fonts";
 
 import { useSettingsPanelContext } from "./context";

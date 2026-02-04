@@ -22,9 +22,8 @@ export type SettingsPanelContextValue = {
 	onRefresh: () => void;
 };
 
-const SettingsPanelContext = React.createContext<SettingsPanelContextValue | null>(
-	null,
-);
+const SettingsPanelContext =
+	React.createContext<SettingsPanelContextValue | null>(null);
 
 export const useSettingsPanelContext = () => {
 	const context = React.use(SettingsPanelContext);

@@ -1,7 +1,10 @@
 import { IconDownload, IconRefresh, IconRotate2 } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
+import {
+	ButtonGroup,
+	ButtonGroupSeparator,
+} from "@/components/ui/button-group";
 import {
 	Tooltip,
 	TooltipContent,
@@ -21,25 +24,35 @@ export const SettingsPanelFooter = () => {
 		>
 			<ButtonGroup className="border">
 				<Tooltip>
-					<TooltipTrigger>
-						<Button
-							variant="ghost"
-							onClick={onDownload}
-							disabled={!downloadUrl}
-							aria-label="Download PDF"
-						>
-							<IconDownload />
-						</Button>
+					<TooltipTrigger
+						render={
+							<Button
+								variant="outline"
+								onClick={onDownload}
+								disabled={!downloadUrl}
+								aria-label="Reset to defaults"
+								className="border-none"
+							/>
+						}
+					>
+						<IconDownload />
 					</TooltipTrigger>
 					<TooltipContent>
 						<p>Download PDF</p>
 					</TooltipContent>
 				</Tooltip>
+				<ButtonGroupSeparator />
 				<Tooltip>
-					<TooltipTrigger>
-						<Button variant="ghost" onClick={onRefresh} aria-label="Refresh">
-							<IconRefresh />
-						</Button>
+					<TooltipTrigger
+						render={
+							<Button
+								variant="ghost"
+								onClick={onRefresh}
+								aria-label="Refresh"
+							/>
+						}
+					>
+						<IconRefresh />
 					</TooltipTrigger>
 					<TooltipContent>
 						<p>Refresh</p>
@@ -48,14 +61,16 @@ export const SettingsPanelFooter = () => {
 			</ButtonGroup>
 			<ButtonGroup>
 				<Tooltip>
-					<TooltipTrigger>
-						<Button
-							variant="outline"
-							onClick={resetSettings}
-							aria-label="Reset to defaults"
-						>
-							<IconRotate2 />
-						</Button>
+					<TooltipTrigger
+						render={
+							<Button
+								variant="outline"
+								onClick={resetSettings}
+								aria-label="Reset to defaults"
+							/>
+						}
+					>
+						<IconRotate2 />
 					</TooltipTrigger>
 					<TooltipContent>
 						<p>Reset to defaults</p>

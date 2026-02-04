@@ -2,11 +2,7 @@ import { useState } from "react";
 
 import { EditorSidebar } from "@/components/editor/editor-sidebar";
 import { PdfPreview } from "@/components/pdf-renderer/pdf-preview";
-import {
-	Sidebar,
-	SidebarInset,
-	SidebarProvider,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 import { createFileRoute } from "@tanstack/react-router";
 import { fetchNotionBlocks, fetchNotionPage } from "@/server/notion";
@@ -54,9 +50,7 @@ function EditorPage() {
 					onBlobUrlChange={setDownloadUrl}
 				/>
 			</SidebarInset>
-			<Sidebar side="right" collapsible="icon" variant="inset">
-				<EditorSidebar downloadUrl={downloadUrl} onDownload={handleDownload} />
-			</Sidebar>
+			<EditorSidebar downloadUrl={downloadUrl} onDownload={handleDownload} />
 		</SidebarProvider>
 	);
 }

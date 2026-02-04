@@ -1,46 +1,52 @@
-'use client'
+"use client";
 
-import type { ComponentPropsWithRef } from 'react'
-import { useId } from 'react'
+import type { ComponentPropsWithRef } from "react";
+import { useId } from "react";
 
-import { cva, type VariantProps } from 'class-variance-authority'
+import { cva, type VariantProps } from "class-variance-authority";
 
-export type SpinnerVariants = 'default' | 'simple' | 'gradient' | 'wave' | 'dots' | 'spinner'
+export type SpinnerVariants =
+	| "default"
+	| "simple"
+	| "gradient"
+	| "wave"
+	| "dots"
+	| "spinner";
 
 export const spinnerVariants = cva(
-	'pointer-events-none relative flex size-6 origin-center animate-spin items-center justify-center',
+	"pointer-events-none relative flex size-6 origin-center animate-spin items-center justify-center",
 	{
 		defaultVariants: {
-			color: 'primary',
-			size: 'md',
+			color: "primary",
+			size: "md",
 		},
 		variants: {
 			color: {
-				primary: 'text-primary',
-				current: 'text-current',
-				danger: 'text-danger',
-				success: 'text-success',
-				warning: 'text-warning',
+				primary: "text-primary",
+				current: "text-current",
+				danger: "text-danger",
+				success: "text-success",
+				warning: "text-warning",
 			},
 			size: {
-				lg: 'size-8',
-				md: '',
-				sm: 'size-4',
-				xl: 'size-10',
+				lg: "size-8",
+				md: "",
+				sm: "size-4",
+				xl: "size-10",
 			},
 		},
 	},
-)
+);
 
 /* -------------------------------------------------------------------------------------------------
  * Internal
  * -------------------------------------------------------------------------------------------------
  * Spinner Primitive
  * -----------------------------------------------------------------------------------------------*/
-interface SpinnerPrimitiveProps extends ComponentPropsWithRef<'svg'> {}
+interface SpinnerPrimitiveProps extends ComponentPropsWithRef<"svg"> {}
 
 export const SpinnerPrimitive = ({ ...props }: SpinnerPrimitiveProps) => {
-	const id = useId()
+	const id = useId();
 
 	return (
 		<svg data-slot="spinner-icon" viewBox="0 0 24 24" {...props}>
@@ -80,17 +86,22 @@ export const SpinnerPrimitive = ({ ...props }: SpinnerPrimitiveProps) => {
 				/>
 			</g>
 		</svg>
-	)
-}
+	);
+};
 
 /* -------------------------------------------------------------------------------------------------
  * Spinner Root
  * -----------------------------------------------------------------------------------------------*/
 interface SpinnerRootProps
-	extends Omit<ComponentPropsWithRef<'svg'>, 'display' | 'opacity' | 'color'>,
+	extends Omit<ComponentPropsWithRef<"svg">, "display" | "opacity" | "color">,
 		VariantProps<typeof spinnerVariants> {}
 
-const SpinnerRoot = ({ className, color, size, ...props }: SpinnerRootProps) => {
+const SpinnerRoot = ({
+	className,
+	color,
+	size,
+	...props
+}: SpinnerRootProps) => {
 	return (
 		<span
 			data-slot="spinner"
@@ -100,14 +111,19 @@ const SpinnerRoot = ({ className, color, size, ...props }: SpinnerRootProps) => 
 				size,
 			})}
 		>
-			<SpinnerPrimitive aria-hidden aria-label="Loading" role="presentation" {...props} />
+			<SpinnerPrimitive
+				aria-hidden
+				aria-label="Loading"
+				role="presentation"
+				{...props}
+			/>
 		</span>
-	)
-}
+	);
+};
 
 /* -------------------------------------------------------------------------------------------------
  * Exports
  * -----------------------------------------------------------------------------------------------*/
-export { SpinnerRoot }
+export { SpinnerRoot };
 
-export type { SpinnerRootProps }
+export type { SpinnerRootProps };
