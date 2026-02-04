@@ -24,7 +24,7 @@ export const SettingsPanelMarginsField = () => {
 							setSettings({ marginTop: Number(event.target.value) })
 						}
 						inputMode="decimal"
-						className="text-xs"
+						className="border-transparent text-xs"
 						type="number"
 					/>
 				</div>
@@ -36,7 +36,7 @@ export const SettingsPanelMarginsField = () => {
 							setSettings({ marginRight: Number(event.target.value) })
 						}
 						inputMode="decimal"
-						className="text-xs"
+						className="border-transparent text-xs"
 						type="number"
 					/>
 				</div>
@@ -48,7 +48,7 @@ export const SettingsPanelMarginsField = () => {
 							setSettings({ marginBottom: Number(event.target.value) })
 						}
 						inputMode="decimal"
-						className="text-xs"
+						className="border-transparent text-xs"
 						type="number"
 					/>
 				</div>
@@ -60,7 +60,7 @@ export const SettingsPanelMarginsField = () => {
 							setSettings({ marginLeft: Number(event.target.value) })
 						}
 						inputMode="decimal"
-						className="text-xs"
+						className="border-transparent text-xs"
 						type="number"
 					/>
 				</div>

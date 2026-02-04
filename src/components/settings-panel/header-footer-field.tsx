@@ -46,11 +46,10 @@ const HeaderFooterSideControls = ({
 	return (
 		<div className="rounded-none border border-border p-2">
 			<div className="flex items-center justify-between gap-2">
-				<label className="flex items-center gap-2 font-medium text-xs">
-					<Checkbox checked={enabled} onCheckedChange={onEnabledChange}>
-						{label}
-					</Checkbox>
-				</label>
+				<Field orientation="horizontal">
+					<Checkbox checked={enabled} onCheckedChange={onEnabledChange} />
+					<FieldLabel>{label}</FieldLabel>
+				</Field>
 				<Select
 					value={content}
 					onValueChange={(value) =>

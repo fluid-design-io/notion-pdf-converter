@@ -47,6 +47,7 @@ function EditorPage() {
 	return (
 		<SidebarProvider className="h-svh bg-sidebar text-sidebar-foreground">
 			<SidebarInset className="relative bg-sidebar">
+				<PatternBackground />
 				<PdfPreview
 					title={pageTitle}
 					blocks={blocks}
@@ -59,3 +60,54 @@ function EditorPage() {
 		</SidebarProvider>
 	);
 }
+
+const PatternBackground = () => (
+	<div
+		className="absolute inset-0 z-0"
+		style={{
+			backgroundImage: `
+        linear-gradient(to right, var(--color-sidebar-border) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--color-sidebar-border) 1px, transparent 1px)
+      `,
+			backgroundSize: "20px 20px",
+			backgroundPosition: "0 0, 0 0",
+			maskImage: `
+        repeating-linear-gradient(
+              to right,
+              black 0px,
+              black 3px,
+              transparent 3px,
+              transparent 8px
+            ),
+            repeating-linear-gradient(
+              to bottom,
+              black 0px,
+              black 3px,
+              transparent 3px,
+              transparent 8px
+            ),
+			linear-gradient(to bottom, #000 75%, transparent)
+      `,
+			WebkitMaskImage: `
+ repeating-linear-gradient(
+              to right,
+              black 0px,
+              black 3px,
+              transparent 3px,
+              transparent 8px
+            ),
+            repeating-linear-gradient(
+              to bottom,
+              black 0px,
+              black 3px,
+              transparent 3px,
+              transparent 8px
+            ),
+			linear-gradient(to bottom, #000 75%, transparent)
+
+      `,
+			maskComposite: "intersect",
+			WebkitMaskComposite: "source-in",
+		}}
+	/>
+);

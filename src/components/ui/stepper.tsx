@@ -67,7 +67,7 @@ function Stepper({
 					}
 				}}
 				inputMode="decimal"
-				className={cn("border-x-0 text-center", inputClassName)}
+				className={cn("border-transparent text-center", inputClassName)}
 				disabled={disabled}
 			/>
 			<Button

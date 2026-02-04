@@ -50,7 +50,7 @@ export const getRendererStyles = (
 	const marginLeft = settings.marginLeft * POINTS_PER_CM;
 
 	const headerFooterFontSize = Math.max(settings.fontSize * 0.8, 8);
-	const headerFooterHeight = Math.max(headerFooterFontSize * 1.6, 16);
+	const headerFooterHeight = Math.max(headerFooterFontSize * 3, 24);
 
 	const pageTitleStyle = {
 		fontSize: settings.fontSize * 2,
