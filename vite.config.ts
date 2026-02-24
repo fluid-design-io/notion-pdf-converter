@@ -19,7 +19,7 @@ const config = defineConfig({
 		viteReact(),
 	],
 	server: {
-		allowedHosts: ["5bf8-128-62-97-72.ngrok-free.app"],
+		allowedHosts: ["5bf8-128-62-97-72.ngrok-free.app", "papyr.uing.dev"],
 	},
 });
 
