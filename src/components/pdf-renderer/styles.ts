@@ -212,7 +212,7 @@ export const getRendererStyles = (
 		codeBlockLine: {
 			fontFamily: "Monospace",
 			fontSize: baseSize * 0.9,
-			lineHeight: Math.max(baseSize * 1.2, 10),
+			lineHeight: 1.2,
 			color: colors.text,
 		},
 		codeBlockCaption: {

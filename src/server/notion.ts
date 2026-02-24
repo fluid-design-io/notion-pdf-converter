@@ -4,7 +4,7 @@ import { enrichBlockTree } from "@/lib/notion/block-tree";
 import { highlightCodeThemes } from "@/lib/notion/code-highlighting";
 import { parsePageId } from "@/lib/notion/utils/parse-page-id";
 
-import { Client, type NotionClientError } from "@notionhq/client";
+import { type NotionClientError } from "@notionhq/client";
 import type { BlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { createServerFn } from "@tanstack/react-start";
 
@@ -47,17 +47,16 @@ export const fetchNotionPage = createServerFn({ method: "POST" })
 		return data;
 	})
 	.handler(async ({ data }) => {
-		const notionApi = new Client({
-			auth: "", // OAUTH 2.0 access token flow
-		});
-		// Parse the page ID from the URL using our utility function
+		const { withNotionClient } = await import("@/server/notion-client.server");
 		const pageId = parsePageId(data.id);
 		if (!pageId) {
 			throw new Error("Could not extract a valid Notion page ID from the URL.");
 		}
 
 		try {
-			return await notionApi.pages.retrieve({ page_id: data.id });
+			return await withNotionClient((notionApi) =>
+				notionApi.pages.retrieve({ page_id: pageId }),
+			);
 		} catch (error) {
 			const notionError = error as NotionClientError;
 			if (notionError?.code === "object_not_found") {
@@ -77,47 +76,43 @@ export const fetchNotionBlocks = createServerFn({ method: "POST" })
 		return data;
 	})
 	.handler(async ({ data }) => {
-		const token = process.env.NOTION_API_TOKEN;
-		if (!token) {
-			throw new Error(
-				"Missing NOTION_API_TOKEN. Configure an integration token to fetch blocks.",
-			);
-		}
-		const notionApi = new Client({ auth: token });
+		const { withNotionClient } = await import("@/server/notion-client.server");
 		const pageId = parsePageId(data.id);
 		if (!pageId) {
 			throw new Error("Could not extract a valid Notion page ID from the URL.");
 		}
 
-		const listBlockChildren = async (blockId: string) => {
-			const blocks: BlockObjectResponse[] = [];
-			let cursor: string | undefined;
-
-			do {
-				const response = await notionApi.blocks.children.list({
-					block_id: blockId,
-					page_size: 100,
-					start_cursor: cursor,
-				});
-				const pageBlocks = response.results.filter(
-					(result): result is BlockObjectResponse => result.object === "block",
-				);
-				blocks.push(...pageBlocks);
-				cursor = response.has_more
-					? (response.next_cursor ?? undefined)
-					: undefined;
-			} while (cursor);
-
-			return blocks;
-		};
-
 		try {
-			const rootBlocks = await listBlockChildren(pageId);
-			const enrichedBlocks = await enrichBlockTree(
-				rootBlocks,
-				listBlockChildren,
-			);
-			return await addCodeHighlightsToBlocks(enrichedBlocks as NotionBlock[]);
+			return await withNotionClient(async (notionApi) => {
+				const listBlockChildren = async (blockId: string) => {
+					const blocks: BlockObjectResponse[] = [];
+					let cursor: string | undefined;
+
+					do {
+						const response = await notionApi.blocks.children.list({
+							block_id: blockId,
+							page_size: 100,
+							start_cursor: cursor,
+						});
+						const pageBlocks = response.results.filter(
+							(result): result is BlockObjectResponse => result.object === "block",
+						);
+						blocks.push(...pageBlocks);
+						cursor = response.has_more
+							? (response.next_cursor ?? undefined)
+							: undefined;
+					} while (cursor);
+
+					return blocks;
+				};
+
+				const rootBlocks = await listBlockChildren(pageId);
+				const enrichedBlocks = await enrichBlockTree(
+					rootBlocks,
+					listBlockChildren,
+				);
+				return await addCodeHighlightsToBlocks(enrichedBlocks as NotionBlock[]);
+			});
 		} catch (error) {
 			const notionError = error as NotionClientError;
 			if (notionError?.code === "object_not_found") {

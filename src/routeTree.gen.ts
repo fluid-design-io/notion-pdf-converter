@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OauthStartRouteImport } from './routes/oauth.start'
+import { Route as OauthCallbackRouteImport } from './routes/oauth.callback'
 import { Route as EditorIdRouteImport } from './routes/editor.$id'
 
 const TermsRoute = TermsRouteImport.update({
@@ -29,6 +31,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OauthStartRoute = OauthStartRouteImport.update({
+  id: '/oauth/start',
+  path: '/oauth/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OauthCallbackRoute = OauthCallbackRouteImport.update({
+  id: '/oauth/callback',
+  path: '/oauth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EditorIdRoute = EditorIdRouteImport.update({
   id: '/editor/$id',
   path: '/editor/$id',
@@ -40,12 +52,16 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/editor/$id': typeof EditorIdRoute
+  '/oauth/callback': typeof OauthCallbackRoute
+  '/oauth/start': typeof OauthStartRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/editor/$id': typeof EditorIdRoute
+  '/oauth/callback': typeof OauthCallbackRoute
+  '/oauth/start': typeof OauthStartRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +69,34 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/editor/$id': typeof EditorIdRoute
+  '/oauth/callback': typeof OauthCallbackRoute
+  '/oauth/start': typeof OauthStartRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/privacy' | '/terms' | '/editor/$id'
+  fullPaths:
+    | '/'
+    | '/privacy'
+    | '/terms'
+    | '/editor/$id'
+    | '/oauth/callback'
+    | '/oauth/start'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/privacy' | '/terms' | '/editor/$id'
-  id: '__root__' | '/' | '/privacy' | '/terms' | '/editor/$id'
+  to:
+    | '/'
+    | '/privacy'
+    | '/terms'
+    | '/editor/$id'
+    | '/oauth/callback'
+    | '/oauth/start'
+  id:
+    | '__root__'
+    | '/'
+    | '/privacy'
+    | '/terms'
+    | '/editor/$id'
+    | '/oauth/callback'
+    | '/oauth/start'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +104,8 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   EditorIdRoute: typeof EditorIdRoute
+  OauthCallbackRoute: typeof OauthCallbackRoute
+  OauthStartRoute: typeof OauthStartRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,6 +131,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/oauth/start': {
+      id: '/oauth/start'
+      path: '/oauth/start'
+      fullPath: '/oauth/start'
+      preLoaderRoute: typeof OauthStartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oauth/callback': {
+      id: '/oauth/callback'
+      path: '/oauth/callback'
+      fullPath: '/oauth/callback'
+      preLoaderRoute: typeof OauthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/editor/$id': {
       id: '/editor/$id'
       path: '/editor/$id'
@@ -107,6 +160,8 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   EditorIdRoute: EditorIdRoute,
+  OauthCallbackRoute: OauthCallbackRoute,
+  OauthStartRoute: OauthStartRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

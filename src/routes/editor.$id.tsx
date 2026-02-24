@@ -4,17 +4,44 @@ import { EditorSidebar } from "@/components/editor/editor-sidebar";
 import { PdfPreview } from "@/components/pdf-renderer/pdf-preview";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
-import { createFileRoute } from "@tanstack/react-router";
+import {
+	type BlockObjectResponse,
+	type GetPageResponse,
+} from "@notionhq/client";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { fetchNotionBlocks, fetchNotionPage } from "@/server/notion";
+import { getNotionConnectionStatus } from "@/server/notion-client";
 
 export const Route = createFileRoute("/editor/$id")({
 	component: EditorPage,
 	loader: async ({ params }) => {
-		const page = await fetchNotionPage({ data: { id: params.id } });
-		const blocks = await fetchNotionBlocks({ data: { id: params.id } });
+		const connection = await getNotionConnectionStatus();
+		const returnTo = `/editor/${params.id}`;
+		if (!connection.connected) {
+			throw redirect({
+				href: `/?notionAuth=required&returnTo=${encodeURIComponent(returnTo)}`,
+				statusCode: 302,
+			});
+		}
+
+		let page: GetPageResponse;
+		let blocks: BlockObjectResponse[];
+		try {
+			page = await fetchNotionPage({ data: { id: params.id } });
+			blocks = await fetchNotionBlocks({ data: { id: params.id } });
+		} catch (error) {
+			const message = error instanceof Error ? error.message : "";
+			if (message.includes("Reconnect Notion")) {
+				throw redirect({
+					href: `/?notionAuth=reconnect_required&returnTo=${encodeURIComponent(returnTo)}`,
+					statusCode: 302,
+				});
+			}
+			throw error;
+		}
+
 		let pageTitle = "";
 		if (page.object === "page" && "properties" in page) {
-			console.log("Page properties", page.properties);
 			const titleProperty = page.properties?.Name;
 			if (titleProperty && "title" in titleProperty) {
 				pageTitle = titleProperty.title[0]?.plain_text || "Notion Page";
@@ -28,7 +55,6 @@ export const Route = createFileRoute("/editor/$id")({
 
 function EditorPage() {
 	const { pageTitle, blocks } = Route.useLoaderData();
-	console.log("PageTitle", pageTitle);
 
 	const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
