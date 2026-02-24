@@ -4,6 +4,8 @@ import { Text, View } from "@react-pdf/renderer";
 import {
 	BookmarkBlock,
 	CalloutBlock,
+	CodeBlock,
+	ColumnListBlock,
 	DividerBlock,
 	HeadingBlock,
 	ImageBlock,
@@ -136,6 +138,12 @@ export function NotionRenderer({
 								<QuoteBlock block={block} styles={styles} />
 							</View>
 						);
+					case "code":
+						return (
+							<View key={block.id} break={breakBefore}>
+								<CodeBlock block={block} styles={styles} settings={settings} />
+							</View>
+						);
 					case "divider":
 						return (
 							<View key={block.id} break={breakBefore}>
@@ -178,6 +186,35 @@ export function NotionRenderer({
 						return (
 							<View key={block.id} break={breakBefore}>
 								<TableBlock block={block} rows={rowBlocks} styles={styles} />
+							</View>
+						);
+					}
+					case "column_list":
+						return (
+							<View key={block.id} break={breakBefore}>
+								<ColumnListBlock
+									block={block}
+									styles={styles}
+									renderColumnChildren={(children) => (
+										<NotionRenderer
+											blocks={children}
+											settings={settings}
+											styles={styles}
+										/>
+									)}
+								/>
+							</View>
+						);
+					case "column": {
+						const columnChildren = block.children ?? [];
+						if (columnChildren.length === 0) return null;
+						return (
+							<View key={block.id} break={breakBefore}>
+								<NotionRenderer
+									blocks={columnChildren}
+									settings={settings}
+									styles={styles}
+								/>
 							</View>
 						);
 					}

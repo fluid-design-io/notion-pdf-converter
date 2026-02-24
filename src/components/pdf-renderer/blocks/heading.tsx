@@ -11,7 +11,12 @@ type HeadingBlockProps = {
 };
 
 export function HeadingBlock({ block, styles }: HeadingBlockProps) {
-	const richText = block[block.type].rich_text;
+	const richText =
+		block.type === "heading_1"
+			? block.heading_1.rich_text
+			: block.type === "heading_2"
+				? block.heading_2.rich_text
+				: block.heading_3.rich_text;
 	const style =
 		block.type === "heading_1"
 			? styles.heading1

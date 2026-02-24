@@ -1,8 +1,43 @@
+import type { NotionBlock } from "@/components/pdf-renderer/types";
+
+import { enrichBlockTree } from "@/lib/notion/block-tree";
+import { highlightCodeThemes } from "@/lib/notion/code-highlighting";
 import { parsePageId } from "@/lib/notion/utils/parse-page-id";
 
 import { Client, type NotionClientError } from "@notionhq/client";
 import type { BlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { createServerFn } from "@tanstack/react-start";
+
+async function addCodeHighlightsToBlocks(
+	blocks: NotionBlock[],
+): Promise<NotionBlock[]> {
+	const highlightedBlocks: NotionBlock[] = [];
+
+	for (const block of blocks) {
+		let nextBlock: NotionBlock = block;
+
+		if (block.children && block.children.length > 0) {
+			nextBlock = {
+				...nextBlock,
+				children: await addCodeHighlightsToBlocks(block.children),
+			};
+		}
+
+		if (block.type === "code") {
+			const codeText = block.code.rich_text
+				.map((item) => item.plain_text ?? "")
+				.join("");
+			nextBlock = {
+				...nextBlock,
+				codeHighlight: await highlightCodeThemes(codeText, block.code.language),
+			};
+		}
+
+		highlightedBlocks.push(nextBlock);
+	}
+
+	return highlightedBlocks;
+}
 
 export const fetchNotionPage = createServerFn({ method: "POST" })
 	.inputValidator((data: { id: string }) => {
@@ -12,13 +47,9 @@ export const fetchNotionPage = createServerFn({ method: "POST" })
 		return data;
 	})
 	.handler(async ({ data }) => {
-		const token = process.env.NOTION_API_TOKEN;
-		if (!token) {
-			throw new Error(
-				"Missing NOTION_API_TOKEN. Configure an integration token to fetch pages.",
-			);
-		}
-		const notionApi = new Client({ auth: token });
+		const notionApi = new Client({
+			auth: "", // OAUTH 2.0 access token flow
+		});
 		// Parse the page ID from the URL using our utility function
 		const pageId = parsePageId(data.id);
 		if (!pageId) {
@@ -58,12 +89,13 @@ export const fetchNotionBlocks = createServerFn({ method: "POST" })
 			throw new Error("Could not extract a valid Notion page ID from the URL.");
 		}
 
-		const blocks: BlockObjectResponse[] = [];
-		let cursor: string | undefined;
-		try {
+		const listBlockChildren = async (blockId: string) => {
+			const blocks: BlockObjectResponse[] = [];
+			let cursor: string | undefined;
+
 			do {
 				const response = await notionApi.blocks.children.list({
-					block_id: pageId,
+					block_id: blockId,
 					page_size: 100,
 					start_cursor: cursor,
 				});
@@ -75,6 +107,17 @@ export const fetchNotionBlocks = createServerFn({ method: "POST" })
 					? (response.next_cursor ?? undefined)
 					: undefined;
 			} while (cursor);
+
+			return blocks;
+		};
+
+		try {
+			const rootBlocks = await listBlockChildren(pageId);
+			const enrichedBlocks = await enrichBlockTree(
+				rootBlocks,
+				listBlockChildren,
+			);
+			return await addCodeHighlightsToBlocks(enrichedBlocks as NotionBlock[]);
 		} catch (error) {
 			const notionError = error as NotionClientError;
 			if (notionError?.code === "object_not_found") {
@@ -84,45 +127,4 @@ export const fetchNotionBlocks = createServerFn({ method: "POST" })
 			}
 			throw error;
 		}
-
-		const fetchBlockChildren = async (blockId: string) => {
-			const children: BlockObjectResponse[] = [];
-			let childCursor: string | undefined;
-			do {
-				const response = await notionApi.blocks.children.list({
-					block_id: blockId,
-					page_size: 100,
-					start_cursor: childCursor,
-				});
-				const childBlocks = response.results.filter(
-					(result): result is BlockObjectResponse => result.object === "block",
-				);
-				children.push(...childBlocks);
-				childCursor = response.has_more
-					? (response.next_cursor ?? undefined)
-					: undefined;
-			} while (childCursor);
-			return children;
-		};
-
-		const enrichedBlocks: (BlockObjectResponse & {
-			children?: BlockObjectResponse[];
-		})[] = [];
-
-		for (const block of blocks) {
-			if (
-				block.has_children &&
-				(block.type === "table" ||
-					block.type === "toggle" ||
-					block.type === "bulleted_list_item" ||
-					block.type === "numbered_list_item")
-			) {
-				const children = await fetchBlockChildren(block.id);
-				enrichedBlocks.push({ ...block, children });
-			} else {
-				enrichedBlocks.push(block);
-			}
-		}
-
-		return enrichedBlocks;
 	});

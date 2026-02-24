@@ -15,6 +15,9 @@ export const COLORS = {
 		link: TW_COLORS.blue[500],
 		codeForeground: TW_COLORS.red[600],
 		codeBackground: TW_COLORS.neutral[100],
+		codeBlockBorder: TW_COLORS.neutral[200],
+		codeBlockHeaderBg: TW_COLORS.neutral[50],
+		codeBlockHeaderText: TW_COLORS.neutral[600],
 		tableHeaderBg: TW_COLORS.neutral[200],
 	},
 	dark: {
@@ -26,6 +29,9 @@ export const COLORS = {
 		link: "#38bdf8",
 		codeForeground: "#EB5758",
 		codeBackground: TW_COLORS.neutral[800],
+		codeBlockBorder: TW_COLORS.neutral[700],
+		codeBlockHeaderBg: TW_COLORS.neutral[900],
+		codeBlockHeaderText: TW_COLORS.neutral[400],
 		tableHeaderBg: TW_COLORS.neutral[800],
 	},
 };
@@ -179,6 +185,44 @@ export const getRendererStyles = (
 			paddingVertical: baseSize * 0.1,
 			fontFamily: "Monospace",
 		},
+		codeBlock: {
+			borderWidth: 1,
+			borderColor: colors.codeBlockBorder,
+			borderRadius: 6,
+			marginBottom: spacing,
+			overflow: "hidden",
+		},
+		codeBlockHeader: {
+			backgroundColor: colors.codeBlockHeaderBg,
+			borderBottomWidth: 1,
+			borderBottomColor: colors.codeBlockBorder,
+			paddingHorizontal: spacing * 0.6,
+			paddingVertical: spacing * 0.35,
+		},
+		codeBlockLanguage: {
+			color: colors.codeBlockHeaderText,
+			fontFamily: "Monospace",
+			fontSize: baseSize * 0.75,
+		},
+		codeBlockBody: {
+			backgroundColor: colors.codeBackground,
+			paddingHorizontal: spacing * 0.6,
+			paddingVertical: spacing * 0.5,
+		},
+		codeBlockLine: {
+			fontFamily: "Monospace",
+			fontSize: baseSize * 0.9,
+			lineHeight: Math.max(baseSize * 1.2, 10),
+			color: colors.text,
+		},
+		codeBlockCaption: {
+			color: colors.mutedForeground,
+			paddingHorizontal: spacing * 0.6,
+			paddingTop: spacing * 0.45,
+			paddingBottom: spacing * 0.6,
+			fontSize: baseSize * 0.85,
+			fontFamily: settings.font,
+		},
 		callout: {
 			borderLeftWidth: 3,
 			paddingLeft: baseSize * 0.6,
@@ -268,6 +312,17 @@ export const getRendererStyles = (
 		},
 		toggleChildren: {
 			marginLeft: spacing * 0.8,
+		},
+		columnList: {
+			flexDirection: "row",
+			alignItems: "flex-start",
+			marginBottom: spacing,
+		},
+		column: {
+			minWidth: 0,
+		},
+		columnSpacer: {
+			marginRight: spacing * 0.8,
 		},
 		unsupportedBanner: {
 			backgroundColor: "#f97316",

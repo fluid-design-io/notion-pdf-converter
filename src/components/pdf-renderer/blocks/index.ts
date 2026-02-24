@@ -1,5 +1,7 @@
 export { BookmarkBlock } from "./bookmark";
 export { CalloutBlock } from "./callout";
+export { CodeBlock } from "./code";
+export { ColumnListBlock } from "./column-list";
 export { DividerBlock } from "./divider";
 export { HeadingBlock } from "./heading";
 export { ImageBlock } from "./image";
